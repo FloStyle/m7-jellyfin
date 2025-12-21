@@ -1,6 +1,7 @@
 var http = require('movian/http');
 var page = require('movian/page');
 var service = require('movian/service');
+var popup = require('movian/popup');
 const Utils = require('./utils');
 const Api = require('./api');
 
