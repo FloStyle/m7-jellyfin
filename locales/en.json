@@ -11,5 +11,6 @@
   "auth.missing_credentials.title": "Missing credentials",
   "auth.missing_credentials": "Please go in the settings and fill out your {{provider_name}} credentials",
   "credits.kofi": "Support me on Ko-fi",
-  "credits.github": "Star me on GitHub"
+  "credits.github": "Star me on GitHub",
+  "search.title": "Results for {{query}}"
 }

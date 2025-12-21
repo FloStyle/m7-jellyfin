@@ -11,5 +11,6 @@
   "auth.missing_credentials.title": "Credenziali mancanti",
   "auth.missing_credentials": "Vai nelle impostazioni e inserisci le tue credenziali {{provider_name}}",
   "credits.kofi": "Supportami su Ko-fi",
-  "credits.github": "Dammi una stella su GitHub"
+  "credits.github": "Dammi una stella su GitHub",
+  "search.title": "Risultati per {{query}}"
 }

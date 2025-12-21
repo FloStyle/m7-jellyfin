@@ -11,6 +11,7 @@ class View {
   constructor(plugin) {
     this.plugin = plugin;
     this.trans = plugin.trans;
+    this.cache = plugin.cache;
     this.routes = [
       {
         path: `start`,
@@ -18,12 +19,12 @@ class View {
         view: this.showHome
       },
       {
-        path: `searchresults:(.*)`,
+        path: `search:(.*)`,
         view: this.showSearch
       },
       {
-        path: `folder:(.*)`,
-        view: this.showFolder
+        path: `library:(.*)`,
+        view: this.showLibrary
       },
       {
         path: `series:(.*)`,
@@ -95,15 +96,17 @@ class View {
 
     var libraries = this.api.getLibraries();
     this.setPageHeader(page, service.host);
-    page.appendItem(`${this.prefix}:searchresults:`, 'search', { title: this.trans.l('') });
+    page.appendItem(`${this.prefix}:search:`, 'search', { title: this.trans.l('') });
 
     page.appendItem('', 'separator', '');
     var items = libraries.Items ?? [];
+
     items.forEach(item => {
-      page.appendItem(`${this.prefix}:folder:${item.Id}`, 'directory', {
+      page.appendItem(`${this.prefix}:library:${item.Id}`, 'directory', {
         title: item.Name,
         icon: this.api.getItemImage(item.Id, 'Primary')
       });
+      this.cache.set(`library:${item.Id}`, item);
     });
 
     page.appendItem('', 'separator', '');
@@ -111,16 +114,26 @@ class View {
   }
 
   showSearch = (page, query) => {
-
-  }
-
-  showFolder = (page, id) => {
     this.setPageHeader(page, this.trans.l('plugin.loading'));
-
 
     page.model.contents = 'grid';
     page.contents = 'list';
-    page.metadata.title = 'Movies';
+    page.metadata.title = this.trans.l('search.title', { query: query });
+
+  }
+
+  showLibrary = (page, id) => {
+    this.setPageHeader(page, this.trans.l('plugin.loading'));
+
+    let title = '';
+    try {
+      let pageData = this.cache.get(`library:${id}`);
+      title = pageData.Name;
+    } catch (e) { }
+
+    page.model.contents = 'grid';
+    page.contents = 'list';
+    page.metadata.title = title;
     // page.options.createAction('sort_by', 'Sort By', static(prova) {
 
     // });
@@ -171,14 +184,21 @@ class View {
   showSeries = (page, series) => {
     this.setPageHeader(page, this.trans.l('plugin.loading'));
 
+    let title = '';
+    try {
+      let pageData = this.cache.get(`item:${series}`);
+      title = pageData.Name;
+    } catch (e) { }
+
     page.model.contents = 'grid';
     page.contents = 'list';
-    page.metadata.title = 'Movies';
+    page.metadata.title = title;
 
     var response = this.api.getSeriesSeasons(series);
     var seasons = response.Items ?? [];
 
     seasons.forEach((season) => {
+      this.cache.set(`series:${series}:season:${season.Id}`, season);
       var mediaItem = {
         title: season.Name,
         icon: this.api.getItemImage(season.Id, 'Primary', {
@@ -198,9 +218,15 @@ class View {
   showSeason = (page, series, season) => {
     this.setPageHeader(page, this.trans.l('plugin.loading'));
 
+    let title = '';
+    try {
+      let pageData = this.cache.get(`series:${series}:season:${season}`);
+      title = pageData.Name;
+    } catch (e) { }
+
     page.model.contents = 'grid';
     page.contents = 'grid';
-    page.metadata.title = 'Movies';
+    page.metadata.title = title;
 
     var response = this.api.getSeasonEpisodes(series, season);
     var episodes = response.Items ?? [];
@@ -217,9 +243,15 @@ class View {
   showAlbum = (page, album) => {
     this.setPageHeader(page, this.trans.l('plugin.loading'));
 
+    let title = '';
+    try {
+      let pageData = this.cache.get(`item:${album}`);
+      title = pageData.Name;
+    } catch (e) { }
+
     page.model.contents = 'list';
     page.contents = 'list';
-    page.metadata.title = 'Movies';
+    page.metadata.title = title;
 
     let songs = this.api.getAlbumSongs(album)['Items'] ?? [];
     console.log(songs);

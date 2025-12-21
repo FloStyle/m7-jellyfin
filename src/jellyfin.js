@@ -3,6 +3,8 @@ var service = require('movian/service');
 const I18n = require('./i18n');
 const View = require('./view');
 const Settings = require('./settings');
+const Cache = require('./cache');
+
 
 class Jellyfin {
   constructor(path = '', manifest = {}) {
@@ -15,6 +17,9 @@ class Jellyfin {
       this.metadata.i18n,
       I18n.getSelectedLanguage()
     );
+
+    this.cache = new Cache();
+    this.cache.cleanup();
   }
 
   get title() {
