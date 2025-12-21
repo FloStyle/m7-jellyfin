@@ -33,6 +33,10 @@ class View {
         view: this.showSeason
       },
       {
+        path: 'album:(.*)',
+        view: this.showAlbum
+      },
+      {
         path: `video:(.*)`,
         view: this.showVideo
       },
@@ -112,14 +116,6 @@ class View {
   showFolder = (page, id) => {
     this.setPageHeader(page, this.trans.l('plugin.loading'));
 
-    // page.name = 'xd'
-    // page.metadata.name = 'xd'
-
-    // page.metadata.glwview = Plugin.path + "views/details.view";
-    // page.type = 'raw';
-
-    // return false;
-    //
 
     page.model.contents = 'grid';
     page.contents = 'list';
@@ -178,7 +174,6 @@ class View {
     page.contents = 'list';
     page.metadata.title = 'Movies';
 
-
     var response = this.api.getSeriesSeasons(series);
     var seasons = response.Items ?? [];
 
@@ -218,8 +213,25 @@ class View {
     page.loading = false;
   }
 
+  showAlbum = (page, album) => {
+    this.setPageHeader(page, this.trans.l('plugin.loading'));
+
+    page.model.contents = 'list';
+    page.contents = 'list';
+    page.metadata.title = 'Movies';
+
+    let songs = this.api.getAlbumSongs(album)['Items'] ?? [];
+    console.log(songs);
+    songs.forEach((song) => {
+      var mediaItem = this.api.parseItem(song);
+      var path = this.api.getSongUrl(song.Id);
+      let pageItem = page.appendItem(path, 'audio', mediaItem)
+    });
+
+    page.loading = false;
+  }
+
   showVideo = (page, id) => {
-    page.loading = true;
     page.type = 'video';
     this.setPageHeader(page, this.trans.l('plugin.loading'));
     var media = this.api.getItemData(id);

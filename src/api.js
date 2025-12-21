@@ -11,7 +11,10 @@ class Api {
     },
     'Movie': {
       'path': ':video:'
-    }
+    },
+    'MusicAlbum': {
+      'path': ':album:'
+    },
   };
   constructor(user = {}) {
     this.user = user;
@@ -70,7 +73,7 @@ class Api {
   }
 
   getLibraries = function () {
-    var params = {
+    let params = {
       IncludeItemTypes: 'Movie',
       Recursive: 'true',
       Fields: ['PrimaryImageAspectRatio', 'BasicSyncInfo', 'ChannelImage'].join(',')
@@ -114,7 +117,7 @@ class Api {
   }
 
   getItemsData = function (id, offset = 0, limit = 100, sortBy = ['SortName', 'ProductionYear'], sortOrder = 'Ascending') {
-    var params = {
+    let params = {
       SortBy: sortBy.join(','),
       SortOrder: sortOrder,
       ParentId: id,
@@ -142,7 +145,7 @@ class Api {
   }
 
   getSeriesSeasons = function (id) {
-    var params = {
+    let params = {
       userId: this.user.Id,
       Fields: ['ItemCounts', 'PrimaryImageAspectRatio', 'MediaSourceCount'].join(',')
     };
@@ -161,7 +164,7 @@ class Api {
   }
 
   getSeasonEpisodes = function (series, season) {
-    var params = {
+    let params = {
       seasonId: season,
       userId: this.user.Id,
       Fields: ['ItemCounts', 'PrimaryImageAspectRatio', 'MediaSourceCount', 'Overview'].join(',')
@@ -180,8 +183,28 @@ class Api {
     return response;
   }
 
+  getAlbumSongs = function (album) {
+    let params = {
+      ParentId: album,
+      Fields: ['ItemCounts', 'PrimaryImageAspectRatio', 'MediaSourceCount', 'Overview'].join(','),
+      SortBy: ['ParentIndexNumber', 'IndexNumber', 'SortName'].join(',')
+    }
+
+    var url = `${service.host}/Users/${this.user.Id}/Items?${utils.paramsToString(params)}`;
+    var response = http.request(url, {
+      method: 'GET',
+      headers: this.getDefaultHeaders()
+    });
+
+    if (response.statuscode && response.statuscode == 200) {
+      response = JSON.parse(response);
+    }
+
+    return response;
+  }
+
   getMediaLogo = function (id, quality = 90) {
-    var params = {
+    let params = {
       'quality': quality,
       'format': 'Png'
     }
@@ -251,6 +274,7 @@ class Api {
           quality: 90
         });
         break;
+      case 'Audio':
       case 'MusicAlbum':
         icon = this.getItemImage(item.Id, 'Primary', {
           fillHeight: 175,
@@ -303,7 +327,35 @@ class Api {
       mediaItem.description = item.Overview;
     }
 
+    if (['Audio'].indexOf(item.Type) > -1) {
+      mediaItem.artist = item.AlbumArtist;
+      mediaItem.track = item.IndexNumber;
+      mediaItem.album = item.Album;
+      mediaItem.sources = [];
+      mediaItem.sources.push({
+        url: this.getSongUrl(item.Id),
+        mimetype: "audio/mpeg"
+      });
+    }
+
     return mediaItem;
+  }
+
+  getSongUrl = function (id) {
+    let params = {
+      UserId: this.user.Id,
+      MaxStreamingBitrate: 140000000,
+      Container: 'opus,webm|opus,ts|mp3,mp3,aac,m4a|aac,m4b|aac,flac,webma,webm|webma,wav,ogg',
+      TranscodingContainer: 'mp4',
+      TranscodingProtocol: 'hls',
+      ApiKey: service.access_token,
+      AudioCodec: 'aac',
+      EnableRedirection: true,
+      EnableRemoteMedia: false,
+      EnableAudioVbrEncoding: true
+    }
+    params = utils.paramsToString(params);
+    return `${service.host}/Audio/${id}/universal?${params}`;
   }
 
   getPath = function (prefix, id, type) {
