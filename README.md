@@ -32,7 +32,7 @@ This will generate the zip into the `/dist` folder
 
 - [x] Subtitle support
 - [ ] Resume from where you've left
-- [ ] Music playback
+- [x] Music playback
 - [ ] Scrobble playback
 - [ ] Additional provider support (Emby)
 - [ ] Multi profile support
