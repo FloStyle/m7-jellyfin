@@ -209,7 +209,8 @@ class Api {
       'format': 'Png'
     }
 
-    return `${service.host}/Items/${id}/Images/Logo?${utils.paramsToString(params)}`;
+    let url = `${service.host}/Items/${id}/Images/Logo?${utils.paramsToString(params)}`;
+    return url.trim();
   }
 
   getItemImage = function (
@@ -222,7 +223,8 @@ class Api {
     }
 
     parameters = utils.paramsToString(parameters);
-    return `${service.host}/Items/${id}/Images/${type}?${parameters} `;
+    let url = `${service.host}/Items/${id}/Images/${type}?${parameters}`;
+    return url.trim();
   }
 
   getItemData = function (id) {
