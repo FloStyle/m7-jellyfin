@@ -162,6 +162,10 @@ class View {
           let mediaItem = this.api.parseItem(item);
           let path = this.api.getPath(this.prefix, item.Id, item.Type);
           let pageItem = page.appendItem(path, 'video', mediaItem);
+
+          if (item.Id && mediaItem) {
+            this.cache.set(`item:${item.Id}`, mediaItem);
+          }
         });
 
         offset += items.length;
@@ -189,7 +193,7 @@ class View {
     let title = '';
     try {
       let pageData = this.cache.get(`item:${series}`);
-      title = pageData.Name;
+      title = pageData.title;
     } catch (e) { }
 
     page.model.contents = 'grid';
