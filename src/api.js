@@ -5,6 +5,13 @@ const Utils = require('./utils');
 const utils = new Utils();
 
 class Api {
+  static defaultSorting = 'SortName';
+  static sortOptions = {
+    name: 'SortName',
+    release_date: 'PremiereDate',
+    date_added: 'DateCreated',
+    last_played: 'DatePlayed'
+  }
   static mediaTypes = {
     'Series': {
       'path': ':series:'
@@ -60,11 +67,6 @@ class Api {
       console.log(e);
     }
 
-
-    // if (response.statuscode && response.statuscode !== 200) {
-    // 	return page.error(i18n.ErrorUnknown);
-    // }
-    console.log(response);
     if (response.statuscode && response.statuscode == 200) {
       response = JSON.parse(response);
     }
@@ -116,9 +118,29 @@ class Api {
     return response;
   }
 
-  getItemsData = function (id, offset = 0, limit = 100, sortBy = ['SortName', 'ProductionYear'], sortOrder = 'Ascending') {
+  getItemsData = function (id, offset = 0, limit = 100, sortBy = null, sortOrder = 'Ascending') {
+    let sort = ['SortName', 'ProductionYear'];
+    sortBy = sortBy ? sortBy : Api.defaultSorting;
+
+    if (sort.indexOf(sortBy) === -1) {
+      sort.unshift(sortBy);
+    }
+
+    sortOrder = typeof sortOrder === 'string' ? sortOrder : 'Ascending';
+    switch (sortOrder.toLowerCase()) {
+      case 'descending':
+      case 'desc':
+        sortOrder = 'Descending';
+        break;
+      case 'ascending':
+      case 'asc':
+      default:
+        sortOrder = 'Ascending';
+        break;
+    }
+
     let params = {
-      SortBy: sortBy.join(','),
+      SortBy: typeof sort === 'array' ? sort.join(',') : sort,
       SortOrder: sortOrder,
       ParentId: id,
       StartIndex: offset,
@@ -295,6 +317,7 @@ class Api {
         });
         break;
     }
+
     if (icon) {
       mediaItem.icon = icon;
     }

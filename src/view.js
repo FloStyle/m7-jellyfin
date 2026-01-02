@@ -1,4 +1,3 @@
-var http = require('movian/http');
 var page = require('movian/page');
 var service = require('movian/service');
 var popup = require('movian/popup');
@@ -50,6 +49,9 @@ class View {
 
     this.api = new Api();
     this.user = {};
+
+    this.sort_by = service.default_sort_by ?? null;
+    this.sort_order = service.default_sort_order ?? null;
   }
 
   get prefix() {
@@ -134,13 +136,7 @@ class View {
     page.model.contents = 'grid';
     page.contents = 'list';
     page.metadata.title = title;
-    // page.options.createAction('sort_by', 'Sort By', static(prova) {
 
-    // });
-
-    // page.options.createOptAction
-
-    // console.log(page.options);
     var offset = 0;
     var limit = 20;
     var hasMore = true;
@@ -158,7 +154,7 @@ class View {
       if (!hasMore) return;
 
       setTimeout(() => {
-        var data = this.api.getItemsData(id, offset, limit);
+        var data = this.api.getItemsData(id, offset, limit, this.sort_by, this.sort_order);
 
         // popup.notify(JSON.stringify(data), 3);
         let items = data.Items ?? [];
@@ -176,6 +172,12 @@ class View {
         page.loading = false;
       }, 125);
     }
+
+    this.setSorting(page, () => {
+      offset = 0;
+      hasMore = true;
+      browse.bind(this)();
+    });
 
     page.asyncPaginator = browse.bind(this);
     browse.bind(this)();
@@ -254,7 +256,6 @@ class View {
     page.metadata.title = title;
 
     let songs = this.api.getAlbumSongs(album)['Items'] ?? [];
-    console.log(songs);
     songs.forEach((song) => {
       var mediaItem = this.api.parseItem(song);
       var path = this.api.getSongUrl(song.Id);
@@ -408,6 +409,46 @@ class View {
     page.contents = "items";
     page.entries = 0;
     page.loading = true;
+  }
+
+  setSorting(page, callback = false) {
+    let sortByOpts = [];
+    let sortOrderOpts = [
+      ['asc', this.trans.l('sort.order_asc'), false],
+      ['desc', this.trans.l('sort.order_desc'), false]
+    ];
+
+    Object.entries(Api.sortOptions).forEach(([key, value]) => {
+      sortByOpts.push([value, this.trans.l('sort.' + key), false]);
+    });
+
+    sortByOpts.forEach((opt, index) => {
+      if (opt[0] == this.sort_by) {
+        sortByOpts[index][2] = true;
+      }
+    });
+
+    sortOrderOpts.forEach((opt, index) => {
+      if (opt[0] == this.sort_order) {
+        sortOrderOpts[index][2] = true;
+      }
+    });
+
+    let optionChanged = (value, type) => {
+      this[type] = value;
+      page.flush();
+      if (typeof callback === 'function') {
+        callback(value);
+      }
+    };
+
+    page.options.createMultiOpt('sort_by', this.trans.l('page.sort_by'), sortByOpts, (value) => {
+      optionChanged(value, 'sort_by');
+    });
+
+    page.options.createMultiOpt('sort_order', this.trans.l('page.sort_order'), sortOrderOpts, (value) => {
+      optionChanged(value, 'sort_order');
+    });
   }
 
 }

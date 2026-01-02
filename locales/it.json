@@ -1,8 +1,13 @@
 {
+  "setting.connection_settings": "Impostazioni di connessione",
   "setting.host": "Host",
   "setting.username": "Nome utente",
   "setting.password": "Password",
+  "setting.preferences": "Preferenze",
   "setting.ps3_compatibility": "Compatibilità PS3",
+  "setting.insecure_images": "Recupera le immagini tramite URL non sicuro",
+  "setting.default_sort_by": "Ordinamento predefinito",
+  "setting.default_sort_order": "Modalità di ordinamento predefinita",
   "action.credits": "Visualizza crediti",
   "action.update": "Aggiorna {{plugin_name}}",
   "plugin.updating": "Aggiornando {{plugin_name}}, attendi...",
@@ -12,5 +17,15 @@
   "auth.missing_credentials": "Vai nelle impostazioni e inserisci le tue credenziali {{provider_name}}",
   "credits.kofi": "Supportami su Ko-fi",
   "credits.github": "Dammi una stella su GitHub",
-  "search.title": "Risultati per {{query}}"
+  "search.title": "Risultati per {{query}}",
+  "item.favourite": "Aggiungi ai preferiti",
+  "item.unfavourite": "Rimuovi dai preferiti",
+  "page.sort_by": "Ordina per",
+  "page.sort_order": "Ordinamento",
+  "sort.order_asc": "Crescente",
+  "sort.order_desc": "Decrescente",
+  "sort.name": "Titolo",
+  "sort.release_date": "Data di uscita",
+  "sort.date_added": "Data di aggiunta",
+  "sort.last_played": "Ultima riproduzione"
 }
