@@ -4,7 +4,7 @@ const I18n = require('./i18n');
 const View = require('./view');
 const Settings = require('./settings');
 const Cache = require('./cache');
-
+require('./polyfill');
 
 class Jellyfin {
   constructor(path = '', manifest = {}) {
@@ -38,17 +38,15 @@ class Jellyfin {
     service.create(this.title, `${this.id}:start`, 'video', true, this.icon);
 
     var settings = new Settings(this);
-    var view = new View(this);
-
     settings.init();
+
+    var view = new View(this);
     view.routing();
   }
 }
 
 var jellyfin = new Jellyfin(Plugin.path, Plugin.manifest);
 jellyfin.init();
-
-
 
 function getVideoStream(id) {
   // https://api.jellyfin.org/#tag/Videos/operation/GetVideoStreamByContainer
