@@ -100,9 +100,9 @@ class View {
     this.setPageHeader(page, service.host);
     page.appendItem(`${this.prefix}:search:`, 'search', { title: this.trans.l('') });
 
-    page.appendItem('', 'separator', '');
     var items = libraries.Items ?? [];
-
+    if (items.length > 0) {
+      page.appendItem('', 'separator', { title: this.trans.l('home.libraries') });
     items.forEach(item => {
       page.appendItem(`${this.prefix}:library:${item.Id}`, 'directory', {
         title: item.Name,
@@ -110,6 +110,7 @@ class View {
       });
       this.cache.set(`library:${item.Id}`, item);
     });
+    }
 
     page.appendItem('', 'separator', '');
     page.loading = false;

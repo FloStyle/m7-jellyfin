@@ -27,5 +27,6 @@
   "sort.name": "Titolo",
   "sort.release_date": "Data di uscita",
   "sort.date_added": "Data di aggiunta",
-  "sort.last_played": "Ultima riproduzione"
+  "sort.last_played": "Ultima riproduzione",
+  "home.libraries": "Librerie"
 }
