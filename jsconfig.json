@@ -5,10 +5,13 @@
     "module": "commonjs",
     "noEmit": true,
     "noImplicitAny": true,
-    "strict": true
+    "strict": true,
+    // "checkJs": true,
+    "allowJs": true
   },
   "include": [
-    "src/**/*.js"
+    "src/**/*.js",
+    "libs/movian/**/*.d.ts"
   ],
   "exclude": [
     "node_modules"
