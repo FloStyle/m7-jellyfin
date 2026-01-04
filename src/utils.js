@@ -37,11 +37,17 @@ class Utils {
 
   getDevice = function () {
     var device = 'Movian';
-    if (service.ps3_compatibility) {
+    if (Utils.isPS3()) {
       device = 'Sony Playstation 3';
     }
 
+
     return device;
+  }
+
+  static isPS3() {
+    return service.ps3_compatibility
+      || typeof Core.storagePath !== 'undefined' && Core.storagePath.indexOf('/dev_hdd0/game/HTSS00003/') === 0;
   }
 
   getOptimalBitrate = function (maxBitrate) {

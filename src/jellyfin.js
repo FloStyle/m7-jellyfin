@@ -20,6 +20,8 @@ class Jellyfin {
 
     this.cache = new Cache();
     this.cache.cleanup();
+
+    this.init();
   }
 
   get title() {
@@ -46,10 +48,3 @@ class Jellyfin {
 }
 
 var jellyfin = new Jellyfin(Plugin.path, Plugin.manifest);
-jellyfin.init();
-
-function getVideoStream(id) {
-  // https://api.jellyfin.org/#tag/Videos/operation/GetVideoStreamByContainer
-  // https://gist.github.com/EthanArmbrust/efd561585722647ba3310fa9016e4b8a#file-sony-playstation-3-movian-xml
-  // var url = service.host '/Videos/' + id + '/stream.'
-}

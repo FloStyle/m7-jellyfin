@@ -103,13 +103,13 @@ class View {
     var items = libraries.Items ?? [];
     if (items.length > 0) {
       page.appendItem('', 'separator', { title: this.trans.l('home.libraries') });
-    items.forEach(item => {
-      page.appendItem(`${this.prefix}:library:${item.Id}`, 'directory', {
-        title: item.Name,
-        icon: this.api.getItemImage(item.Id, 'Primary')
+      items.forEach(item => {
+        page.appendItem(`${this.prefix}:library:${item.Id}`, 'directory', {
+          title: item.Name,
+          icon: this.api.getItemImage(item.Id, 'Primary')
+        });
+        this.cache.set(`library:${item.Id}`, item);
       });
-      this.cache.set(`library:${item.Id}`, item);
-    });
     }
 
     page.appendItem('', 'separator', '');
@@ -311,7 +311,7 @@ class View {
 
 
     var url = `${service.host}/Videos/${id}/master.m3u8`;
-    var params = utils.paramsToString({
+    var params = {
       api_key: service.access_token,
       static: false,
       VideoCodec: ['h264'].join(','),
@@ -336,9 +336,13 @@ class View {
       'h264-rangetype': 'SDR',
       'h264-level': 52,
       'h264-deinterlace': true
-    });
+    };
 
-    url = url + '?' + params;
+    if (Utils.isPS3()) {
+      params.maxHeight = 1080;
+    }
+
+    url = url + '?' + utils.paramsToString(params);
     // popup.notify(url, 3);
 
     var videoParams = {
