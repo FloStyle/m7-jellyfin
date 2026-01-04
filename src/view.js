@@ -338,7 +338,9 @@ class View {
       'h264-deinterlace': true
     };
 
+    // Video won't be shown on PS3 if resolution is higher than 1080p
     if (Utils.isPS3()) {
+      params.maxWidth = 1920;
       params.maxHeight = 1080;
     }
 
