@@ -1,10 +1,10 @@
 var settings = require('movian/settings');
 var popup = require('movian/popup');
 var service = require('movian/service');
-var page = require('movian/page');
+
+const Navigator = require('./navigator');
 const Utils = require('./utils');
 const Api = require('./api');
-const utils = new Utils();
 
 class Settings {
   constructor(plugin) {
@@ -13,7 +13,7 @@ class Settings {
     this.logo = plugin.icon;
     this.synopsis = plugin.metadata.synopsis;
     this.trans = plugin.trans;
-
+    this.navigator = new Navigator();
   }
 
   get prefix() {
@@ -24,24 +24,24 @@ class Settings {
     settings.globalSettings(this.id, this.title, this.logo, this.synopsis);
 
     settings.createDivider(this.trans.l('setting.connection_settings'));
-    settings.createString('host', this.trans.l('setting.host'), '', function (value) {
+    settings.createString('host', this.trans.l('setting.host'), '', (value) => {
       service.host = value;
     });
 
-    settings.createString('username', this.trans.l('setting.username'), '', function (value) {
+    settings.createString('username', this.trans.l('setting.username'), '', (value) => {
       service.username = value;
     });
 
-    settings.createString('password', this.trans.l('setting.password'), '', function (value) {
+    settings.createString('password', this.trans.l('setting.password'), '', (value) => {
       service.password = value;
     });
 
-    settings.createBool('ps3_compatibility', this.trans.l('setting.ps3_compatibility'), '', function (value) {
+    settings.createBool('ps3_compatibility', this.trans.l('setting.ps3_compatibility'), '', (value) => {
       service.ps3_compatibility = value;
     });
 
-    settings.createAction('logout', 'Logout', function () {
-      page.redirect('settings:');
+    settings.createAction('logout', 'Logout', () => {
+      this.navigator.openUrl('settings:');
       service.username = '';
       service.password = '';
       service.access_token = '';
@@ -72,20 +72,16 @@ class Settings {
     });
 
 
-    /*
     settings.createDivider('Plugin');
 
     settings.createAction('update', this.trans.l('action.update', { plugin_name: this.title }), () => {
-      console.log(page);
       popup.notify(this.trans.l('plugin.updating', { plugin_name: this.title }), 5);
-      page.redirect(Utils.getLatestPlugin());
+      this.navigator.openUrl(Utils.getLatestPlugin());
     });
 
     settings.createAction('credits', this.trans.l('action.credits'), () => {
-      console.log(page);
-      page.redirect(`${this.prefix}:credits`);
+      this.navigator.openUrl(`${this.prefix}:credits`);
     });
-    */
 
   }
 }

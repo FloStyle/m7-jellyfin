@@ -1,5 +1,4 @@
-var service = require('movian/service');
-
+const service = require('movian/service');
 const I18n = require('./i18n');
 const View = require('./view');
 const Settings = require('./settings');
