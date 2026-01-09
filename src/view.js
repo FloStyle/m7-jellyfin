@@ -97,7 +97,7 @@ class View {
     }
 
     var libraries = this.api.getLibraries();
-    this.setPageHeader(page, service.host);
+    this.setPageHeader(page, this.api.host);
     page.appendItem(`${this.prefix}:search:`, 'search', { title: this.trans.l('') });
 
     var items = libraries.Items ?? [];
@@ -298,7 +298,7 @@ class View {
           if (stream.Type === 'Subtitle') {
             subtitles.push({
               title: stream.DisplayTitle || stream.Title,
-              url: `${service.host}/Videos/${id}/${source.Id}/Subtitles/${j}/Stream.srt`,
+              url: `${this.api.host}/Videos/${id}/${source.Id}/Subtitles/${j}/Stream.srt`,
               language: stream.Language,
               source: defaultSubtitleSource,
             });
@@ -310,7 +310,7 @@ class View {
     // popup.notify(JSON.stringify(media), 3);
 
 
-    var url = `${service.host}/Videos/${id}/master.m3u8`;
+    var url = `${this.api.host}/Videos/${id}/master.m3u8`;
     var params = {
       api_key: service.access_token,
       static: false,

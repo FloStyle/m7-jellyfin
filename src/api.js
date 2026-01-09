@@ -31,6 +31,17 @@ class Api {
     this.user = user;
   }
 
+  get host() {
+    let url = service.host.trim();
+
+    let hasHttpPrefix = new RegExp("^(http|https)://", "i");
+    if (!hasHttpPrefix.test(url)) {
+      url = `${service.is_secure ? 'https' : 'http'}://${url}`;
+    }
+
+    return url;
+  }
+
   getHeaders = function (authorization = false) {
     var deviceId = Core.deviceId;
     var header = `MediaBrowser Client="Movian", Device="${utils.getDevice()}", DeviceId="${deviceId}", Version="${plugin.version}"`;
@@ -51,7 +62,7 @@ class Api {
 
   authenticate = function () {
     try {
-      var url = `${service.host}/Users/AuthenticateByName`;
+      var url = `${this.host}/Users/AuthenticateByName`;
       var response = http.request(url, {
         method: 'POST',
         headers: {
@@ -81,7 +92,7 @@ class Api {
       Fields: ['PrimaryImageAspectRatio', 'BasicSyncInfo', 'ChannelImage'].join(',')
     };
 
-    var url = service.host + '/Items?request=' + JSON.stringify(params);
+    var url = this.host + '/Items?request=' + JSON.stringify(params);
 
     // try {
     var response = http.request(url, {
@@ -100,7 +111,7 @@ class Api {
   }
 
   getLibraryData = function (id) {
-    var url = `${service.host}/Items/${id}`;
+    var url = `${this.host}/Items/${id}`;
 
     // try {
     var response = http.request(url, {
@@ -152,7 +163,7 @@ class Api {
       EnableImageTypes: ["Primary", "Backdrop", "Banner", "Thumb"].join(',')
     }
     params = utils.paramsToString(params);
-    var url = `${service.host}/Users/${this.user.Id}/Items?${params}`;
+    var url = `${this.host}/Users/${this.user.Id}/Items?${params}`;
 
     var response = http.request(url, {
       method: 'GET',
@@ -172,7 +183,7 @@ class Api {
       Fields: ['ItemCounts', 'PrimaryImageAspectRatio', 'MediaSourceCount'].join(',')
     };
 
-    var url = `${service.host}/Shows/${id}/Seasons?${utils.paramsToString(params)}`;
+    var url = `${this.host}/Shows/${id}/Seasons?${utils.paramsToString(params)}`;
     var response = http.request(url, {
       method: 'GET',
       headers: this.getDefaultHeaders()
@@ -192,7 +203,7 @@ class Api {
       Fields: ['ItemCounts', 'PrimaryImageAspectRatio', 'MediaSourceCount', 'Overview'].join(',')
     };
 
-    var url = `${service.host}/Shows/${series}/Episodes?${utils.paramsToString(params)}`;
+    var url = `${this.host}/Shows/${series}/Episodes?${utils.paramsToString(params)}`;
     var response = http.request(url, {
       method: 'GET',
       headers: this.getDefaultHeaders()
@@ -212,7 +223,7 @@ class Api {
       SortBy: ['ParentIndexNumber', 'IndexNumber', 'SortName'].join(',')
     }
 
-    var url = `${service.host}/Users/${this.user.Id}/Items?${utils.paramsToString(params)}`;
+    var url = `${this.host}/Users/${this.user.Id}/Items?${utils.paramsToString(params)}`;
     var response = http.request(url, {
       method: 'GET',
       headers: this.getDefaultHeaders()
@@ -231,7 +242,7 @@ class Api {
       'format': 'Png'
     }
 
-    let url = `${service.host}/Items/${id}/Images/Logo?${utils.paramsToString(params)}`;
+    let url = `${this.host}/Items/${id}/Images/Logo?${utils.paramsToString(params)}`;
     return url.trim();
   }
 
@@ -245,12 +256,12 @@ class Api {
     }
 
     parameters = utils.paramsToString(parameters);
-    let url = `${service.host}/Items/${id}/Images/${type}?${parameters}`;
+    let url = `${this.host}/Items/${id}/Images/${type}?${parameters}`;
     return url.trim();
   }
 
   getItemData = function (id) {
-    var url = `${service.host}/Users/${this.user.Id}/Items/${id}`;
+    var url = `${this.host}/Users/${this.user.Id}/Items/${id}`;
     var response = http.request(url, {
       method: 'GET',
       headers: this.getDefaultHeaders()
@@ -264,7 +275,7 @@ class Api {
   }
 
   getPlaybackInfo = function (id) {
-    var url = `${service.host}/Items/${id}/PlaybackInfo`;
+    var url = `${this.host}/Items/${id}/PlaybackInfo`;
     var response = http.request(url, {
       method: 'GET',
       headers: this.getDefaultHeaders()
@@ -380,7 +391,7 @@ class Api {
       EnableAudioVbrEncoding: true
     }
     params = utils.paramsToString(params);
-    return `${service.host}/Audio/${id}/universal?${params}`;
+    return `${this.host}/Audio/${id}/universal?${params}`;
   }
 
   getPath = function (prefix, id, type) {

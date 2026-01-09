@@ -2,6 +2,7 @@ var settings = require('movian/settings');
 var popup = require('movian/popup');
 var service = require('movian/service');
 
+const prop = require('movian/prop');
 const Navigator = require('./navigator');
 const Utils = require('./utils');
 const Api = require('./api');
@@ -14,6 +15,8 @@ class Settings {
     this.synopsis = plugin.metadata.synopsis;
     this.trans = plugin.trans;
     this.navigator = new Navigator();
+
+    this.options = {};
   }
 
   get prefix() {
@@ -24,6 +27,10 @@ class Settings {
     settings.globalSettings(this.id, this.title, this.logo, this.synopsis);
 
     settings.createDivider(this.trans.l('setting.connection_settings'));
+    settings.createBool('is_secure', this.trans.l('setting.ssl_enabled'), false, (value) => {
+      service.is_secure = value;
+    });
+
     settings.createString('host', this.trans.l('setting.host'), '', (value) => {
       service.host = value;
     });
@@ -36,7 +43,7 @@ class Settings {
       service.password = value;
     });
 
-    settings.createBool('ps3_compatibility', this.trans.l('setting.ps3_compatibility'), '', (value) => {
+    settings.createBool('ps3_compatibility', this.trans.l('setting.ps3_compatibility'), false, (value) => {
       service.ps3_compatibility = value;
     });
 

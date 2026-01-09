@@ -1,5 +1,6 @@
 {
   "setting.connection_settings": "Connection",
+  "setting.ssl_enabled": "SSL enabled",
   "setting.host": "Host",
   "setting.username": "Username",
   "setting.password": "Password",
