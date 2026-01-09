@@ -7,15 +7,20 @@
 
 A Movian 7 plugin to stream your Jellyfin library
 
-[![MIT License](https://img.shields.io/github/downloads/LouisMarotta/m7-jellyfin/jellyfin.zip?logo=github&label=Downloads)](https://choosealicense.com/licenses/mit/)
-[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
+[![Downloads](https://img.shields.io/github/downloads/LouisMarotta/m7-jellyfin/jellyfin.zip?logo=github&label=Downloads)](https://github.com/LouisMarotta/m7-jellyfin/releases)
+[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](./LICENSE.md)
 [![Ko-Fi](https://img.shields.io/badge/Ko--fi-F16061?&logo=ko-fi&logoColor=white)](https://ko-fi.com/louismarotta)
+
+<a href="https://github.com/LouisMarotta/m7-jellyfin/releases/latest">
+  <img src="assets/badge_github.png" alt="Download" height="120">
+</a>
 
 ## Getting started
 
 ### Installing
 Add the plugin by downloading the zip, and navigating to it from Movian.
-Otherwise you can drop the zip into the `settings/installedplugins` folder, on PlayStation 3 it's in `/dev_hdd0/game/HTSS00003/USRDIR/settings/installedplugins/`.
+
+Otherwise you can drop the zip into the `settings/installedplugins` folder, on PlayStation 3 it's found in `/dev_hdd0/game/HTSS00003/USRDIR/settings/installedplugins/`.
 
 In the plugin's settings, you can add the credentials to your Jellyfin's user.
 
@@ -56,4 +61,4 @@ This should work on every device supported by Movian, including PlayStation 3 an
 
 ## License
 
-[GNU General Public License v3.0 ©](https://choosealicense.com/licenses/gpl-3.0/)
+[GNU General Public License v3.0 ©](./LICENSE.md)
