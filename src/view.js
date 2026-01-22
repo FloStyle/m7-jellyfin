@@ -104,7 +104,8 @@ class View {
     if (items.length > 0) {
       page.appendItem('', 'separator', { title: this.trans.l('home.libraries') });
       items.forEach(item => {
-        page.appendItem(`${this.prefix}:library:${item.Id}`, 'directory', {
+        let { path, type } = this.getMediaPath(item);
+        page.appendItem(path, type, {
           title: item.Name,
           icon: this.api.getItemImage(item.Id, 'Primary')
         });
@@ -142,27 +143,17 @@ class View {
     var limit = 20;
     var hasMore = true;
 
-    var mediaTypes = {
-      'Series': {
-        'path': this.prefix + ':series:'
-      },
-      'Movie': {
-        'path': this.prefix + ':video:'
-      }
-    };
-
     function browse() {
       if (!hasMore) return;
 
       setTimeout(() => {
         var data = this.api.getItemsData(id, offset, limit, this.sort_by, this.sort_order);
 
-        // popup.notify(JSON.stringify(data), 3);
         let items = data.Items ?? [];
         items.forEach((item) => {
           let mediaItem = this.api.parseItem(item);
-          let path = this.api.getPath(this.prefix, item.Id, item.Type);
-          let pageItem = page.appendItem(path, 'video', mediaItem);
+          let { path, type } = this.getMediaPath(item);
+          let pageItem = page.appendItem(path, type, mediaItem);
 
           if (item.Id && mediaItem) {
             this.cache.set(`item:${item.Id}`, mediaItem);
@@ -215,8 +206,8 @@ class View {
         })
       }
 
-      var path = `${this.prefix}:series:${series}:season:${season.Id}`;
-      page.appendItem(path, 'directory', mediaItem);
+      let { path, type } = this.getMediaPath(season, { 'series': series, 'season': season.Id });
+      page.appendItem(path, type, mediaItem);
     });
 
     page.loading = false;
@@ -240,8 +231,8 @@ class View {
 
     episodes.forEach((episode) => {
       var mediaItem = this.api.parseItem(episode);
-      var path = this.api.getPath(this.prefix, episode.Id, episode.Type);
-      let pageItem = page.appendItem(path, 'video', mediaItem)
+      var { path, type } = this.getMediaPath(episode);
+      let pageItem = page.appendItem(path, type, mediaItem)
     });
 
     page.loading = false;
@@ -263,8 +254,8 @@ class View {
     let songs = this.api.getAlbumSongs(album)['Items'] ?? [];
     songs.forEach((song) => {
       var mediaItem = this.api.parseItem(song);
-      var path = this.api.getSongUrl(song.Id);
-      let pageItem = page.appendItem(path, 'audio', mediaItem)
+      var { path, type } = this.getMediaPath(song, { 'album': album });
+      let pageItem = page.appendItem(path, type, mediaItem)
     });
 
     page.loading = false;

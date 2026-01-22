@@ -12,17 +12,16 @@ class Api {
     date_added: 'DateCreated',
     last_played: 'DatePlayed'
   }
-  static mediaTypes = {
-    'Series': {
-      'path': ':series:'
-    },
-    'Movie': {
-      'path': ':video:'
-    },
-    'MusicAlbum': {
-      'path': ':album:'
-    },
+  static mediaMap = {
+    'collectionfolder': '{{prefix}}:library:{{id}}',
+    'manualplaylistsfolder': '{{prefix}}:library:{{id}}',
+    'playlist': '{{prefix}}:library:{{id}}',
+    'series': '{{prefix}}:series:{{id}}',
+    'season': '{{prefix}}:series:{{id}}:season:{{season}}',
+    'episode': '{{prefix}}:video:{{episode}}',
+    'musicalbum': '{{prefix}}:album:{{id}}',
   };
+
   constructor(user = {}) {
     this.user = user;
   }
@@ -394,13 +393,41 @@ class Api {
     return `${this.host}/Audio/${id}/universal?${params}`;
   }
 
-  getPath = function (prefix, id, type) {
-    var path = `${prefix}:video:${id}`;
-    if (typeof Api.mediaTypes[type] !== 'undefined') {
-      path = prefix + Api.mediaTypes[type]['path'] + id;
+  getMediaPath = function (item, context = {}) {
+    let path = null;
+
+    let id = item.Id ?? 0;
+    let type = (item.Type).toLowerCase() ?? 'video';
+    let mediaType = (item.MediaType).toLowerCase() ?? null;
+
+    if (mediaType == 'video') {
+      path = '{{prefix}}:video:{{id}}';
     }
 
-    return path;
+    if (mediaType == 'audio') {
+      path = this.getSongUrl(id);
+    }
+
+    if (!path && typeof Api.mediaMap[type] !== 'undefined') {
+      path = Api.mediaMap[type];
+    }
+
+    context.id = id;
+    if (path) {
+      path = path.replace(/\{\{(\w+)\}\}/g, (match, placeholder) => {
+        return typeof context[placeholder] !== 'undefined' ? context[placeholder] : match;
+      });
+    }
+
+    let item = 'directory';
+    if (['movie', 'episode'].indexOf(type) > -1) {
+      item = 'video';
+    }
+    if (['audio'].indexOf(type) > -1) {
+      item = 'audio';
+    }
+
+    return { path, type: item };
   }
 }
 
