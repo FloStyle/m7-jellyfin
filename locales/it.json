@@ -19,6 +19,7 @@
   "credits.kofi": "Supportami su Ko-fi",
   "credits.github": "Dammi una stella su GitHub",
   "search.title": "Risultati per {{query}}",
+  "search.no_results": "Nessun risultato trovato",
   "item.favourite": "Aggiungi ai preferiti",
   "item.unfavourite": "Rimuovi dai preferiti",
   "page.sort_by": "Ordina per",

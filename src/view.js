@@ -124,6 +124,33 @@ class View {
     page.contents = 'list';
     page.metadata.title = this.trans.l('search.title', { query: query });
 
+    let data = this.api.getItems(query);
+    let items = data.Items ?? [];
+
+    if (items.length > 0) {
+      let categories = {
+        'movies': items.filter((item) => ['Movie'].indexOf(item.Type) > -1),
+        'series': items.filter((item) => ['Series'].indexOf(item.Type) > -1),
+        'episode': items.filter((item) => ['Episode'].indexOf(item.Type) > -1),
+        'music': items.filter((item) => ['MusicAlbum'].indexOf(item.Type) > -1),
+      }
+
+      Object.entries(categories).forEach(([key, items]) => {
+        if (items.length > 0) {
+          page.appendItem('', 'separator', { title: this.trans.l(`search.${key}`) });
+          items.forEach((item) => {
+            let mediaItem = this.api.parseItem(item);
+            let { path, type } = this.getMediaPath(item);
+            page.appendItem(path, type, mediaItem);
+          });
+        }
+      })
+
+    } else {
+      page.error(this.trans.l('search.no_results', { query: query }));
+    }
+
+    page.loading = false;
   }
 
   showLibrary = (page, id) => {
@@ -451,6 +478,11 @@ class View {
     page.options.createMultiOpt('sort_order', this.trans.l('page.sort_order'), sortOrderOpts, (value) => {
       optionChanged(value, 'sort_order');
     });
+  }
+
+  getMediaPath(item, context = {}) {
+    context = { prefix: this.prefix, ...context }
+    return this.api.getMediaPath(item, context);
   }
 
 }

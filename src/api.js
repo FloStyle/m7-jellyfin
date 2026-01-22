@@ -176,6 +176,36 @@ class Api {
     return response;
   }
 
+  /**
+   * Get items from query
+   * @param {string} query
+   * @param {Number} limit
+   * @returns Object
+   */
+  getItems = (query = '', limit = 100) => {
+    let params = {
+      userId: this.user.Id,
+      limit: limit,
+      searchTerm: query,
+      includeItemTypes: ['Movie', 'Series', 'Episode', 'MusicAlbum'].join(','),
+      recursive: true,
+    }
+
+    params = utils.paramsToString(params);
+    let url = `${this.host}/Items?${params}`;
+
+    var response = http.request(url, {
+      method: 'GET',
+      headers: this.getDefaultHeaders()
+    });
+
+    if (response.statuscode && response.statuscode == 200) {
+      response = JSON.parse(response);
+    }
+
+    return response;
+  }
+
   getSeriesSeasons = function (id) {
     let params = {
       userId: this.user.Id,
