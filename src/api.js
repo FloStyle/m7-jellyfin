@@ -182,12 +182,26 @@ class Api {
    * @param {Number} limit
    * @returns Object
    */
-  getItems = (query = '', limit = 100) => {
+  getItems = (query = '', limit = 100, itemTypes = {}) => {
+    let types = {
+      'movies': 'Movie',
+      'tvseries': 'Series',
+      'episodes': 'Episode',
+      'music': 'MusicAlbum'
+    }
+
+    let includedItemTypes = [];
+    Object.entries(itemTypes).forEach(([key, value]) => {
+      if (typeof types[key] !== 'undefined' && value) {
+        includedItemTypes.push(types[key]);
+      }
+    });
+
     let params = {
       userId: this.user.Id,
       limit: limit,
       searchTerm: query,
-      includeItemTypes: ['Movie', 'Series', 'Episode', 'MusicAlbum'].join(','),
+      includeItemTypes: includedItemTypes.join(','),
       recursive: true,
     }
 

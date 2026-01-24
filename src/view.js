@@ -50,6 +50,12 @@ class View {
     this.api = new Api();
     this.user = {};
 
+    this.filters = {
+      'movies': 1,
+      'tvseries': 1,
+      'episodes': 1,
+      'music': 1
+    };
     this.sort_by = service.default_sort_by ?? null;
     this.sort_order = service.default_sort_order ?? null;
   }
@@ -124,31 +130,33 @@ class View {
     page.contents = 'list';
     page.metadata.title = this.trans.l('search.title', { query: query });
 
-    let data = this.api.getItems(query);
-    let items = data.Items ?? [];
+    let search = () => {
+      let data = this.api.getItems(query, 100, this.filters);
+      let items = data.Items ?? [];
 
-    if (items.length > 0) {
-      let categories = {
-        'movies': items.filter((item) => ['Movie'].indexOf(item.Type) > -1),
-        'series': items.filter((item) => ['Series'].indexOf(item.Type) > -1),
-        'episode': items.filter((item) => ['Episode'].indexOf(item.Type) > -1),
-        'music': items.filter((item) => ['MusicAlbum'].indexOf(item.Type) > -1),
-      }
-
-      Object.entries(categories).forEach(([key, items]) => {
-        if (items.length > 0) {
-          page.appendItem('', 'separator', { title: this.trans.l(`search.${key}`) });
-          items.forEach((item) => {
-            let mediaItem = this.api.parseItem(item);
-            let { path, type } = this.getMediaPath(item);
-            page.appendItem(path, type, mediaItem);
-          });
+      if (items.length > 0) {
+        let categories = {
+          'movies': items.filter((item) => ['Movie'].indexOf(item.Type) > -1),
+          'series': items.filter((item) => ['Series'].indexOf(item.Type) > -1),
+          'episode': items.filter((item) => ['Episode'].indexOf(item.Type) > -1),
+          'music': items.filter((item) => ['MusicAlbum'].indexOf(item.Type) > -1),
         }
-      })
 
-    } else {
-      page.error(this.trans.l('search.no_results', { query: query }));
+        Object.entries(categories).forEach(([key, items]) => {
+          if (items.length > 0) {
+            page.appendItem('', 'separator', { title: this.trans.l(`search.${key}`) });
+            items.forEach((item) => {
+              let mediaItem = this.api.parseItem(item);
+              let { path, type } = this.getMediaPath(item);
+              page.appendItem(path, type, mediaItem);
+            });
+          }
+        });
+      } else {
+        page.error(this.trans.l('search.no_results', { query: query }));
+      }
     }
+    this.setFilters(page, search);
 
     page.loading = false;
   }
@@ -438,6 +446,29 @@ class View {
     page.contents = "items";
     page.entries = 0;
     page.loading = true;
+  }
+
+  setFilters(page, callback = {}) {
+    let filters = {};
+    Object.entries(this.filters).forEach(([key, value]) => {
+      filters[key] = { title: this.trans.l(`search.filters.${key}`), value: value };
+    })
+
+    let optionChanged = (value, type) => {
+      this.filters[type] = value;
+      page.flush();
+      if (typeof callback === 'function') {
+        callback(value);
+      }
+    };
+
+    page.options.createDivider(this.trans.l('search.filters.title'));
+    Object.entries(filters).forEach(([key, data]) => {
+      page.options.createBool(key, data.title, data.value, (value) => {
+        optionChanged(value, key);
+      });
+    });
+
   }
 
   setSorting(page, callback = false) {
