@@ -1,8 +1,16 @@
 const service = require('movian/service');
+const popup = require('native/popup');
+var service = require('movian/service');
+
 const I18n = require('./i18n');
 const View = require('./view');
 const Settings = require('./settings');
 const Cache = require('./cache');
+
+const Utils = require('./utils');
+const Upgrader = require('./upgrader');
+const Navigator = require('./navigator');
+
 require('./polyfill');
 
 class Jellyfin {
@@ -43,6 +51,32 @@ class Jellyfin {
 
     var view = new View(this);
     view.routing();
+
+    var upgrader = new Upgrader();
+    var navigator = new Navigator();
+    setTimeout(() => {
+      if (upgrader.shouldCheck && service.check_updates) {
+        let response = upgrader.checkUpdate();
+        upgrader.setLastCheck();
+        let version = response.tag_name ?? null;
+
+        if (version.charAt(0) === 'v')
+          version = version.slice(1);
+
+        if (version && Upgrader.versionCompare(version, this.metadata.version)) {
+          let download = popup.message(
+            "A new update for Jellyfin is available! Press 'Ok' to download it",
+            true,
+            true
+          );
+
+          if (download) {
+            navigator.openUrl(Utils.getLatestPlugin());
+          }
+        }
+      }
+    }, 1500);
+
   }
 }
 
