@@ -39,6 +39,10 @@ class View {
       },
       {
         path: `video:(.*)`,
+        view: this.trackSelect
+      },
+      {
+        path: `video:(.*):atrack:(.*)`,
         view: this.showVideo
       },
       {
@@ -296,7 +300,33 @@ class View {
     page.loading = false;
   }
 
-  showVideo = (page, id) => {
+  trackSelect = (page, id) => {
+    this.setPageHeader(page, this.trans.l('plugin.loading'));
+    page.model.contents = 'list';
+    page.contents = 'list';
+
+    const item = this.api.getItemData(id);
+    const streams = item.MediaStreams ?? [];
+
+    const audios = streams.filter(s => s.Type === 'Audio');
+
+    if (audios.length > 1) {
+      audios.forEach(stream => page.appendItem(
+        `${this.prefix}:video:${id}:atrack:${stream.Index}`,
+        'default',
+        {
+          title: stream.DisplayTitle || stream.Title,
+          icon: 'skin://icons/ic_audiotrack_48px.svg'
+        }
+      ));
+      page.metadata.title = this.trans.l('action.select.audio');
+      page.loading = false;
+    } else {
+      page.redirect(`${this.prefix}:video:${id}:atrack:-1`);
+    }
+  }
+  
+  showVideo = (page, id, atrack) => {
     page.type = 'video';
     this.setPageHeader(page, this.trans.l('plugin.loading'));
     var media = this.api.getItemData(id);
@@ -352,7 +382,6 @@ class View {
       RequireAvc: false,
       EnableAudioVbrEncoding: false,
       TranscodingMaxAudioChannels: 2,
-      AudioStreamIndex: 1,
       // SegmentContainer: 'mp4',
       MinSegments: 1,
       BreakOnNonKeyFrames: true,
@@ -363,6 +392,10 @@ class View {
       'h264-level': 52,
       'h264-deinterlace': true
     };
+
+    atrack = parseInt(atrack);
+    if (atrack > 0)
+      params.AudioStreamIndex = atrack;
 
     // Video won't be shown on PS3 if resolution is higher than 1080p
     if (Utils.isPS3()) {
