@@ -15,7 +15,7 @@
   "plugin.updating": "Aggiornando {{plugin_name}}, attendi...",
   "plugin.loading": "Caricando...",
   "plugin.search": "Cerca...",
-  "action.select.audio": "Seleziona una tracchia audio",
+  "action.select.audio": "Seleziona una traccia audio",
   "plugin.update_available": "{{plugin_name}}: Nuovo aggiornamento disponibile! {{version}}",
   "auth.missing_credentials.title": "Credenziali mancanti",
   "auth.missing_credentials": "Vai nelle impostazioni e inserisci le tue credenziali {{provider_name}}",
