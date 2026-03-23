@@ -12,6 +12,7 @@
   "setting.default_sort_order": "Default sorting order",
   "action.credits": "View credits",
   "action.update": "Update {{plugin_name}}",
+  "action.select.audio": "Select an audio track",
   "plugin.updating": "Updating {{plugin_name}}, please wait...",
   "plugin.loading": "Loading...",
   "plugin.search": "Search...",
