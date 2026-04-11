@@ -42,5 +42,7 @@
   "sort.release_date": "Release date",
   "sort.date_added": "Date added",
   "sort.last_played": "Last played",
-  "home.libraries": "Libraries"
+  "home.libraries": "Libraries",
+  "home.groups": "Groups",
+  "home.favourites": "Favourites"
 }

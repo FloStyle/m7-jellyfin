@@ -18,6 +18,10 @@ class View {
         view: this.showHome
       },
       {
+        path: `favourites`,
+        view: this.showFavourites
+      },
+      {
         path: `search:(.*)`,
         view: this.showSearch
       },
@@ -123,8 +127,41 @@ class View {
       });
     }
 
+    // Favourite
+    page.appendItem('', 'separator', { title: this.trans.l('home.groups') });
+    page.appendItem(`${this.prefix}:favourites`, 'directory', {
+      title: this.trans.l('home.favourites'),
+      icon: Plugin.path + 'assets/icons/favourites.png'
+    });
+
     page.appendItem('', 'separator', '');
     page.loading = false;
+  }
+
+  showFavourites = (page, query) => {
+    this.setPageHeader(page, this.trans.l('plugin.loading'));
+
+    let extraParams = {
+      "Filters": 'isFavourite',
+      "IncludeItemTypes": ['Movie', 'Series'].join(',')
+    }
+
+    let data = this.api.getItemsData(null, 0, 100, this.sort_by, this.sort_order, extraParams)
+    let items = data?.Items ?? [];
+
+    items.forEach((item) => {
+      let mediaItem = this.api.parseItem(item);
+      let { path, type } = this.getMediaPath(item);
+      let pageItem = page.appendItem(path, type, mediaItem);
+      if (item.Id && mediaItem) {
+        this.cache.set(`item:${item.Id}`, mediaItem);
+      }
+    });
+
+    page.entries = data.TotalRecordCount;
+    page.haveMore(false);
+    page.loading = false;
+    page.metadata.title = this.trans.l('home.favourites');
   }
 
   showSearch = (page, query) => {
@@ -325,7 +362,7 @@ class View {
       page.redirect(`${this.prefix}:video:${id}:atrack:-1`);
     }
   }
-  
+
   showVideo = (page, id, atrack) => {
     page.type = 'video';
     this.setPageHeader(page, this.trans.l('plugin.loading'));

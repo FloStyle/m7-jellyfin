@@ -128,7 +128,7 @@ class Api {
     return response;
   }
 
-  getItemsData = function (id, offset = 0, limit = 100, sortBy = null, sortOrder = 'Ascending') {
+  getItemsData = function (id = null, offset = 0, limit = 100, sortBy = null, sortOrder = 'Ascending', extraParams = {}) {
     let sort = ['SortName', 'ProductionYear'];
     sortBy = sortBy ? sortBy : Api.defaultSorting;
 
@@ -152,7 +152,6 @@ class Api {
     let params = {
       SortBy: typeof sort === 'array' ? sort.join(',') : sort,
       SortOrder: sortOrder,
-      ParentId: id,
       StartIndex: offset,
       Limit: limit,
       IncludeItemTypes: ['Movie', 'Series', 'MusicAlbum'].join(','),
@@ -161,6 +160,16 @@ class Api {
       ImageTypeLimit: 1,
       EnableImageTypes: ["Primary", "Backdrop", "Banner", "Thumb"].join(',')
     }
+
+    if (id) {
+      params['ParentId'] = id;
+    }
+
+    params = {
+      ...params,
+      ...extraParams
+    };
+
     params = utils.paramsToString(params);
     var url = `${this.host}/Users/${this.user.Id}/Items?${params}`;
 
