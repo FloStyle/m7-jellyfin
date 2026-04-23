@@ -391,7 +391,7 @@ class View {
           if (stream.Type === 'Subtitle') {
             subtitles.push({
               title: stream.DisplayTitle || stream.Title,
-              url: `${this.api.host}/Videos/${id}/${source.Id}/Subtitles/${j}/Stream.ass`,
+              url: `${this.api.host}/Videos/${id}/${source.Id}/Subtitles/${j}/Stream.${service.subtitle_format || 'srt'}`,
               language: stream.Language,
               source: defaultSubtitleSource,
             });

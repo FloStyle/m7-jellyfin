@@ -78,6 +78,18 @@ class Settings {
       service.default_sort_order = value;
     });
 
+    let subtitleOptions = [
+      ['SRT', this.trans.l('setting.subtitle_format_srt'), false],
+      ['ASS', this.trans.l('setting.subtitle_format_ass'), false]
+    ];
+    subtitleOptions.forEach((value, index) => {
+      if (value[0] === service.subtitle_format) {
+        subtitleOptions[index][2] = true;
+      }
+    });
+    settings.createMultiOpt('subtitle_format', this.trans.l('setting.subtitle_format'), subtitleOptions, function (value) {
+      service.subtitle_format = value;
+    });
 
     settings.createDivider('Plugin');
 
