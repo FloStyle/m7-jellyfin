@@ -1,6 +1,6 @@
 const service = require('movian/service');
-const popup = require('native/popup');
-var service = require('movian/service');
+// movian/popup is the SDK popup module used across this plugin (see view.js, settings.js).
+const popup = require('movian/popup');
 
 const I18n = require('./i18n');
 const View = require('./view');
@@ -16,14 +16,9 @@ require('./polyfill');
 class Jellyfin {
   constructor(path = '', manifest = {}) {
     this.path = path;
-    this.metadata = typeof manifest === 'string'
-      ? JSON.parse(manifest)
-      : manifest;
+    this.metadata = typeof manifest === 'string' ? JSON.parse(manifest) : manifest;
 
-    this.trans = new I18n(
-      this.metadata.i18n,
-      I18n.getSelectedLanguage()
-    );
+    this.trans = new I18n(this.metadata.i18n, I18n.getSelectedLanguage());
 
     this.cache = new Cache();
     this.cache.cleanup();
@@ -58,17 +53,25 @@ class Jellyfin {
       if (upgrader.shouldCheck && service.check_updates) {
         let response = upgrader.checkUpdate();
         upgrader.setLastCheck();
-        let version = response.tag_name ?? null;
+        // The GitHub API can rate-limit or return non-JSON; never assume
+        // a usable version is present (AGENTS.md §9.6).
+        let version =
+          response.ok && response.data && response.data.tag_name ? response.data.tag_name : null;
 
-        if (version.charAt(0) === 'v')
-          version = version.slice(1);
+        if (!version) return;
 
-        if (version && Upgrader.versionCompare(version, this.metadata.version)) {
-          let download = popup.message(
-            "A new update for Jellyfin is available! Press 'Ok' to download it",
-            true,
-            true
-          );
+        if (version.charAt(0) === 'v') version = version.slice(1);
+
+        if (Upgrader.versionCompare(version, this.metadata.version)) {
+          // Guard the message() call: it is optional in some Movian builds.
+          let download =
+            typeof popup.message === 'function'
+              ? popup.message(
+                  "A new update for Jellyfin is available! Press 'Ok' to download it",
+                  true,
+                  true,
+                )
+              : false;
 
           if (download) {
             navigator.openUrl(Utils.getLatestPlugin());
@@ -76,8 +79,7 @@ class Jellyfin {
         }
       }
     }, 1500);
-
   }
 }
 
-var jellyfin = new Jellyfin(Plugin.path, Plugin.manifest);
+new Jellyfin(Plugin.path, Plugin.manifest);

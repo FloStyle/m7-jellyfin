@@ -1,5 +1,5 @@
 const kvstore = require('native/kvstore');
-const http = require('movian/http');
+const HttpClient = require('./http');
 
 class Upgrader {
   constructor() {
@@ -7,6 +7,7 @@ class Upgrader {
     this.repo = 'm7-jellyfin';
     this.endpoint = `https://api.github.com/repos/${this.author}/${this.repo}/releases/latest`;
     this.kvurl = 'jellyfin:upgrader';
+    this.http = new HttpClient();
   }
 
   get shouldCheck() {
@@ -24,7 +25,7 @@ class Upgrader {
     }
 
     // Check if atleast a day has passed
-    return (Date.now() - date) > (24 * 60 * 60 * 1000);
+    return Date.now() - date > 24 * 60 * 60 * 1000;
   }
 
   get lastCheck() {
@@ -40,21 +41,15 @@ class Upgrader {
   }
 
   checkUpdate() {
-    let response = http.request(this.endpoint, {
+    return this.http.request(this.endpoint, {
       method: 'GET',
     });
-
-    if (response.statuscode && response.statuscode == 200) {
-      response = JSON.parse(response);
-    }
-
-    return response;
   }
 
   static versionCompare(v1, v2) {
-    var vnum1 = 0, vnum2 = 0;
-    for (var i = 0, j = 0; (i < v1.length
-      || j < v2.length);) {
+    var vnum1 = 0,
+      vnum2 = 0;
+    for (var i = 0, j = 0; i < v1.length || j < v2.length; ) {
       while (i < v1.length && v1[i] != '.') {
         vnum1 = vnum1 * 10 + (v1[i] - '0');
         i++;
@@ -64,10 +59,8 @@ class Upgrader {
         j++;
       }
 
-      if (vnum1 > vnum2)
-        return 1;
-      if (vnum2 > vnum1)
-        return -1;
+      if (vnum1 > vnum2) return 1;
+      if (vnum2 > vnum1) return -1;
 
       vnum1 = vnum2 = 0;
       i++;

@@ -1,4 +1,12 @@
 {
 	"root": true,
-	"extends": ["@guarapi/eslint-config-guarapi"]
+	"extends": ["@guarapi/eslint-config-guarapi"],
+	"globals": {
+		"Plugin": "readonly",
+		"Core": "readonly"
+	},
+	"rules": {
+		"@typescript-eslint/no-shadow": "off",
+		"no-empty": ["error", { "allowEmptyCatch": true }]
+	}
 }

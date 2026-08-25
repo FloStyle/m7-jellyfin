@@ -4,7 +4,7 @@ class Utils {
   paramsToString = function (obj) {
     var pairs = [];
     for (var key in obj) {
-      if (obj.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
         var value = obj[key];
         if (Array.isArray(value)) {
           for (var i = 0; i < value.length; i++) {
@@ -16,7 +16,7 @@ class Utils {
       }
     }
     return pairs.join('&');
-  }
+  };
 
   joinString = function (array, separator = ',') {
     var O = Object(array);
@@ -33,7 +33,7 @@ class Utils {
       }
     }
     return result.join(separator);
-  }
+  };
 
   getDevice = function () {
     var device = 'Movian';
@@ -41,17 +41,15 @@ class Utils {
       device = 'Sony Playstation 3';
     }
 
-
     return device;
-  }
+  };
 
   static isPS3() {
-    return service.ps3_compatibility
-      || typeof Core.storagePath !== 'undefined' && Core.storagePath.indexOf('/dev_hdd0/game/HTSS00003/') === 0;
-  }
-
-  getOptimalBitrate = function (maxBitrate) {
-
+    return (
+      service.ps3_compatibility ||
+      (typeof Core.storagePath !== 'undefined' &&
+        Core.storagePath.indexOf('/dev_hdd0/game/HTSS00003/') === 0)
+    );
   }
 
   // TODO: Handle releasese from Ko-fi
@@ -71,7 +69,7 @@ class Utils {
     let minutes = date.getUTCMinutes();
     let seconds = date.getUTCSeconds();
 
-    return (hours * 3600) + (minutes * 60) + seconds;
+    return hours * 3600 + minutes * 60 + seconds;
   }
 }
 

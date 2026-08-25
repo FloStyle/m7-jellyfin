@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 if (typeof Object !== 'undefined') {
   if (typeof Object.entries !== 'function') {
@@ -36,7 +36,6 @@ if (typeof Object !== 'undefined') {
     };
   }
 }
-
 
 module.exports = {
   entries: Object.entries,

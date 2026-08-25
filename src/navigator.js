@@ -63,7 +63,7 @@ class Navigator {
     if (options.parenturl) args.parenturl = options.parenturl;
 
     try {
-      prop.sendEvent(eventSink, "openurl", args);
+      prop.sendEvent(eventSink, 'openurl', args);
       return true;
     } catch (e) {
       console.error('[NAV] Error sending openurl event:', e);

@@ -12,7 +12,7 @@ class I18n {
     try {
       return prop.global.i18n.iso639_1.toString();
     } catch (e) {
-      console.log('Couldn\'t get language', e);
+      console.log("Couldn't get language", e);
     }
     return 'en';
   }
@@ -20,7 +20,7 @@ class I18n {
   compile = (str, params = {}) => {
     str = typeof str !== 'string' ? str.toString() : str;
     return str.replace(/{{(.+?)}}/g, (_, g1) => params[g1] || g1);
-  }
+  };
 
   l(key, params = {}) {
     try {
@@ -29,7 +29,7 @@ class I18n {
         string = this.compile(string, params);
       }
       return string;
-    } catch (e) { }
+    } catch (e) {}
     return '';
   }
 

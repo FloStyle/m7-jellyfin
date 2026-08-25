@@ -2,7 +2,6 @@ var settings = require('movian/settings');
 var popup = require('movian/popup');
 var service = require('movian/service');
 
-const prop = require('movian/prop');
 const Navigator = require('./navigator');
 const Utils = require('./utils');
 const Api = require('./api');
@@ -43,9 +42,14 @@ class Settings {
       service.password = value;
     });
 
-    settings.createBool('ps3_compatibility', this.trans.l('setting.ps3_compatibility'), false, (value) => {
-      service.ps3_compatibility = value;
-    });
+    settings.createBool(
+      'ps3_compatibility',
+      this.trans.l('setting.ps3_compatibility'),
+      false,
+      (value) => {
+        service.ps3_compatibility = value;
+      },
+    );
 
     settings.createAction('logout', 'Logout', () => {
       this.navigator.openUrl('settings:');
@@ -55,41 +59,90 @@ class Settings {
       popup.notify('Logged out successfully!', 3);
     });
 
+    settings.createDivider(this.trans.l('setting.playback_settings'));
+
+    // Maximum streaming bitrate in bits per second (AGENTS.md §14.3).
+    // Never unlimited by default; 20 Mbps is the recommended default.
+    let bitrateOptions = [
+      ['8000000', this.trans.l('setting.bitrate_low'), false],
+      ['20000000', this.trans.l('setting.bitrate_default'), false],
+      ['40000000', this.trans.l('setting.bitrate_high'), false],
+    ];
+    let currentBitrate = String(service.max_streaming_bitrate || '20000000');
+    bitrateOptions.forEach((value, index) => {
+      if (String(value[0]) === currentBitrate) {
+        bitrateOptions[index][2] = true;
+      }
+    });
+    settings.createMultiOpt(
+      'max_streaming_bitrate',
+      this.trans.l('setting.max_streaming_bitrate'),
+      bitrateOptions,
+      function (value) {
+        service.max_streaming_bitrate = value;
+      },
+    );
+
+    // Force transcoding disables direct play entirely (AGENTS.md §14.4).
+    settings.createBool(
+      'force_transcode',
+      this.trans.l('setting.force_transcode'),
+      false,
+      (value) => {
+        service.force_transcode = value;
+      },
+    );
+
     settings.createDivider(this.trans.l('setting.preferences'));
 
     let sortByOptions = [];
     Object.entries(Api.sortOptions).forEach(([key, value]) => {
       sortByOptions.push([value, this.trans.l('sort.' + key), service.default_sort_by === value]);
     });
-    settings.createMultiOpt('default_sort_by', this.trans.l('setting.default_sort_by'), sortByOptions, function (value) {
-      service.default_sort_by = value;
-    });
+    settings.createMultiOpt(
+      'default_sort_by',
+      this.trans.l('setting.default_sort_by'),
+      sortByOptions,
+      function (value) {
+        service.default_sort_by = value;
+      },
+    );
 
     let sortOrderOptions = [
       ['asc', this.trans.l('sort.order_asc'), false],
-      ['desc', this.trans.l('sort.order_desc'), false]
+      ['desc', this.trans.l('sort.order_desc'), false],
     ];
     sortOrderOptions.forEach((value, index) => {
       if (value[0] === service.default_sort_order) {
         sortOrderOptions[index][2] = true;
       }
     });
-    settings.createMultiOpt('default_sort_order', this.trans.l('setting.default_sort_order'), sortOrderOptions, function (value) {
-      service.default_sort_order = value;
-    });
+    settings.createMultiOpt(
+      'default_sort_order',
+      this.trans.l('setting.default_sort_order'),
+      sortOrderOptions,
+      function (value) {
+        service.default_sort_order = value;
+      },
+    );
 
     let subtitleOptions = [
       ['SRT', this.trans.l('setting.subtitle_format_srt'), false],
-      ['ASS', this.trans.l('setting.subtitle_format_ass'), false]
+      ['ASS', this.trans.l('setting.subtitle_format_ass'), false],
     ];
     subtitleOptions.forEach((value, index) => {
       if (value[0] === service.subtitle_format) {
         subtitleOptions[index][2] = true;
       }
     });
-    settings.createMultiOpt('subtitle_format', this.trans.l('setting.subtitle_format'), subtitleOptions, function (value) {
-      service.subtitle_format = value;
-    });
+    settings.createMultiOpt(
+      'subtitle_format',
+      this.trans.l('setting.subtitle_format'),
+      subtitleOptions,
+      function (value) {
+        service.subtitle_format = value;
+      },
+    );
 
     settings.createDivider('Plugin');
 
@@ -97,15 +150,18 @@ class Settings {
       service.check_updates = value;
     });
 
-    settings.createAction('update', this.trans.l('action.update', { plugin_name: this.title }), () => {
-      popup.notify(this.trans.l('plugin.updating', { plugin_name: this.title }), 5);
-      this.navigator.openUrl(Utils.getLatestPlugin());
-    });
+    settings.createAction(
+      'update',
+      this.trans.l('action.update', { plugin_name: this.title }),
+      () => {
+        popup.notify(this.trans.l('plugin.updating', { plugin_name: this.title }), 5);
+        this.navigator.openUrl(Utils.getLatestPlugin());
+      },
+    );
 
     settings.createAction('credits', this.trans.l('action.credits'), () => {
       this.navigator.openUrl(`${this.prefix}:credits`);
     });
-
   }
 }
 
