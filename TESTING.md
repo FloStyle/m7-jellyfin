@@ -73,6 +73,8 @@ The repo ships a small automation harness for the L0-L2 loop (see `scripts/test-
 
 **Private environment**: hosts/keys are read from `scripts/.ps3-test.env` (git-ignored, not shipped). The public script has placeholder defaults only.
 
+**Validation status**: harness exercised end-to-end on real hardware 2026-08-26 (deploy + hash + logs + watch). `watch` confirmed live playback by detecting the server-side ffmpeg HLS transcode (old zip does not report session positions; the session-position sensor becomes active with the new code once STAB-3 is fixed).
+
 **Security note**: the Movian player itself logs full playback URLs including the `api_key` (`Settings initialized for URL ...?api_key=...`) — PS3 logs are therefore sensitive and must never be shared raw; the harness only greps patterns, it does not publish logs.
 
 **Known limitation**: remotely launching Movian via webMAN `load.ps3` returns OK but does not reliably start the app on this setup — Movian is launched manually from the XMB, then the plugin is opened and a title started; the harness validates everything else automatically.
