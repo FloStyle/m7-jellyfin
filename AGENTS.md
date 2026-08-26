@@ -95,6 +95,7 @@
 
 See `docs/missions/` for full specs:
 - **stability-1**: TranscodingUrl sanitization + trivial playback bugs (blocking — the fork stays undeployable until done)
+- **stability-2**: upgrader → `FloStyle/m7-jellyfin` releases (drop-in update plan: `docs/plans/plan-drop-in-updates.md`)
 - **NEO roadmap**: language prefs, Ethernet/Wi-Fi mode, dynamic home, rich details, QuickConnect/QR, multi-user, structural refactor (phased)
 
 ---
