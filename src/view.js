@@ -4,6 +4,7 @@ var popup = require('movian/popup');
 const Utils = require('./utils');
 const Api = require('./api');
 const Session = require('./session');
+const Tracking = require('./tracking');
 
 class View {
   constructor(plugin) {
@@ -56,6 +57,7 @@ class View {
 
     this.api = new Api();
     this.session = new Session(this.api);
+    this.tracking = new Tracking(this.session);
     this.user = {};
 
     this.filters = {

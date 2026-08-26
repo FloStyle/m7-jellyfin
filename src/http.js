@@ -54,6 +54,13 @@ class HttpClient {
       return { ok: false, error: 'http_error', status: status };
     }
 
+    // 2xx with an empty body (e.g. 204 No Content) is valid — some Jellyfin
+    // endpoints (Sessions/Playing, Sessions/Playing/Progress, Sessions/Playing/Stopped)
+    // return 204 with no body. Don't treat an empty body as invalid JSON.
+    if (!response || response.trim() === '') {
+      return { ok: true, data: null };
+    }
+
     try {
       // Movian's http.request returns the body string with a statuscode
       // property attached, so the response itself is parsed here.
