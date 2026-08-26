@@ -163,6 +163,7 @@ This repository is **open to external AI agents**, with conditions.
 | `atrack > 0` skips audio track index 0 (`view.js`) | Use `atrack >= 0` (`-1` = default) |
 | Subtitle URL uses loop var `j` (`view.js`) | Use `stream.Index` |
 | Server ffmpeg OOM when GPU is busy | Free VRAM before Jellyfin tests (environmental) |
+| `POST /Sessions/Playing/Progress` → « Authentication without realm » | Session reporting auth broken (observed in PS3 logs) — fix in STAB-3: verify auth header/URL on session POSTs |
 | Updater targets upstream GitHub | Point to `FloStyle/m7-jellyfin` releases (plan: drop-in updates) |
 
 ## §10 Backlog (short)
