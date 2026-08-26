@@ -105,10 +105,12 @@ cmd_logs() {
 # ── L2c: watch Jellyfin sessions for active playback ─────────────────────────
 cmd_watch() {
   local secs="${1:-60}"
-  log "L2c — watching Jellyfin sessions for ${secs}s (PlaybackInfo/Progress reported by plugin)"
+  log "L2c — watching for ${secs}s: Jellyfin sessions (new code) + server transcode (old code)"
   jf_up || { fail "Jellyfin unreachable or no API key"; return 2; }
   local probe="$REPO_DIR/scripts/jf-sessions.py"
-  local t start=0 last_pos=-1 stable=0
+  local t last_pos=-1 stable=0 transcode_seen=0
+  local t0
+  t0=$(date +%s)
   for ((t = 0; t < secs; t += 5)); do
     local state name pos method
     state=$(python3 "$probe" "$JF_HOST/Sessions?api_key=$JF_API_KEY")
@@ -119,15 +121,26 @@ cmd_watch() {
         ok "PLAYING: '$name' | pos=${pos} ticks | method=$method"
         if [ "$pos" = "$last_pos" ]; then stable=$((stable + 1)); else stable=0; last_pos=$pos; fi
         [ $stable -ge 2 ] && { ok "position advancing — playback confirmed"; return 0; }
-      else
-        warn "Movian session idle (no position) — waiting..."
       fi
-    else
-      [ "$t" -eq 0 ] && warn "no active Movian session yet — waiting for playback to start..."
     fi
+    # Fallback sensor: server-side transcode started in this window (works with the old zip, which does not report positions)
+    if command -v journalctl >/dev/null 2>&1; then
+      if journalctl -u jellyfin --since "@$t0" --no-pager 2>/dev/null | grep -qE "/usr/lib/jellyfin-ffmpeg/ffmpeg .*hls"; then
+        transcode_seen=1
+        ok "server transcode started (ffmpeg HLS) — playback active"
+      fi
+    fi
+    if [ $transcode_seen -eq 1 ] && [ "$(journalctl -u jellyfin --since '10 seconds ago' --no-pager 2>/dev/null | grep -cE 'FFmpeg exited')" -eq 0 ]; then
+      return 0
+    fi
+    [ "$t" -eq 0 ] && warn "no playback signal yet — waiting..."
     sleep 5
   done
-  fail "no advancing playback detected in ${secs}s — check the PS3 UI"; return 1
+  if [ $transcode_seen -eq 1 ]; then
+    ok "transcode was active during the window — playback confirmed (old zip: no position reporting)"
+    return 0
+  fi
+  fail "no playback detected in ${secs}s (no session position, no server transcode)"; return 1
 }
 
 # ── status ───────────────────────────────────────────────────────────────────
