@@ -655,6 +655,12 @@ class View {
     // Start reporting playback to Jellyfin (AGENTS.md §16.1).
     this.session.start(this.activePlaySession);
 
+    // IMPORTANT: re-assert the page type right before assigning the video
+    // source. setPageHeader/API calls reset the page type on Movian, so the
+    // 'video' type set at the top of this function is lost by this point —
+    // the legacy plugin re-set it here and playback never started without it
+    // (page stays in loading, player never initializes).
+    page.type = 'video';
     page.source = 'videoparams:' + JSON.stringify(videoParams);
     page.loading = false;
   };
