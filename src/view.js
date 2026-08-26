@@ -591,14 +591,17 @@ class View {
     atrack = parseInt(atrack);
     var url = selection.url;
     // For transcoded streams, ask the server for the selected audio track.
-    if (atrack > 0 && selection.method === 'Transcode') {
+    // `>= 0` so track index 0 is honored (-1 = default). The TranscodingUrl
+    // may already carry an AudioStreamIndex from the server: remove it first
+    // to avoid duplicates (AGENTS.md §9).
+    if (atrack >= 0 && selection.method === 'Transcode') {
+      url = url.replace(/([?&])AudioStreamIndex=[^&]*/, '$1').replace(/\?&/, '?');
       url += (url.indexOf('?') > -1 ? '&' : '?') + 'AudioStreamIndex=' + atrack;
     }
 
-    // Subtitles come from the selected media source's streams. The index is
-    // relative to ALL MediaStreams, as Jellyfin expects. The api_key is
-    // required because Movian cannot send auth headers for subtitle fetches
-    // (§9.3 allows it where the server requires it).
+    // Subtitles come from the selected media source's streams. Use the
+    // stream's own Index (Jellyfin's global stream index), not the loop
+    // variable — they diverge when streams are filtered (AGENTS.md §9).
     var subtitles = [];
     var mediaSource = selection.mediaSource;
     var sourceStreams = mediaSource.MediaStreams ?? [];
@@ -607,7 +610,7 @@ class View {
       if (stream.Type === 'Subtitle') {
         subtitles.push({
           title: stream.DisplayTitle || stream.Title,
-          url: `${this.api.host}/Videos/${id}/${mediaSource.Id}/Subtitles/${j}/Stream.${service.subtitle_format || 'srt'}?api_key=${service.access_token}`,
+          url: `${this.api.host}/Videos/${id}/${mediaSource.Id}/Subtitles/${stream.Index}/Stream.${service.subtitle_format || 'srt'}?api_key=${service.access_token}`,
           language: stream.Language,
           source: 'Jellyfin',
         });
@@ -639,9 +642,6 @@ class View {
       no_fs_scan: true,
       subtitles: subtitles,
     };
-    if (typeof media.ProviderIds !== 'undefined' && typeof media.ProviderIds.Imdb !== 'undefined') {
-      videoParams.imdbid = media.ProviderIds.Imdb;
-    }
 
     // Store session data for playback reporting (AGENTS.md §16).
     this.activePlaySession = {
@@ -649,7 +649,7 @@ class View {
       mediaSourceId: mediaSource.Id,
       playSessionId: selection.playSessionId,
       playMethod: selection.method,
-      audioStreamIndex: atrack > 0 ? atrack : null,
+      audioStreamIndex: atrack >= 0 ? atrack : null,
     };
 
     // Start reporting playback to Jellyfin (AGENTS.md §16.1).

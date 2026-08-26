@@ -420,7 +420,9 @@ class Api {
         var level = parseFloat(stream.VideoLevel);
         if (!isNaN(level) && level > 4.1) return false;
       } else if (stream.Type === 'Audio') {
-        var codec = (stream.Codec || '').toLowerCase();
+        // Normalize codec names: Jellyfin may report 'ac-3' or 'eac3'
+        // instead of 'ac3' (AGENTS.md §9).
+        var codec = (stream.Codec || '').toLowerCase().replace('-', '');
         if (['aac', 'ac3', 'mp3'].indexOf(codec) === -1) return false;
         if (stream.Channels && stream.Channels > 6) return false;
       }
@@ -438,6 +440,30 @@ class Api {
     }
 
     return true;
+  };
+
+  /**
+   * Sanitize a server-provided playback URL before handing it to the PS3
+   * player (AGENTS.md §9 — "PS3 stalls on raw TranscodingUrl"):
+   *
+   * 1. Jellyfin 10.11 TranscodingUrl starts with `?&` (empty first query
+   *    parameter) — the old Movian player rejects the source before any
+   *    fetch. Normalize `?&` to `?`.
+   * 2. Encode raw commas in query values (aac,ac3 -> aac%2Cac3) to match
+   *    the legacy working URL format; unencoded commas are another suspect
+   *    for the old player's URL parser.
+   *
+   * Already-encoded sequences (%2C, %20, ...) are left untouched.
+   */
+  sanitizePlaybackUrl = function (url) {
+    url = url.replace(/\?&/, '?');
+    // Jellyfin 10.11 also inserts empty params mid-query (`&&`) — the old
+    // player's URL parser can trip on them too.
+    url = url.replace(/&&/g, '&');
+    url = url.replace(/(%[0-9A-Fa-f]{2})|,/g, function (m, enc) {
+      return enc || '%2C';
+    });
+    return url;
   };
 
   /**
@@ -488,6 +514,9 @@ class Api {
       if (transcodeUrl) {
         // Relative URLs are resolved against the server host (§13.5).
         var url = /^https?:\/\//i.test(transcodeUrl) ? transcodeUrl : this.host + transcodeUrl;
+        // Sanitize before handing to the player: `?&` quirk + comma encoding
+        // (AGENTS.md §9).
+        url = this.sanitizePlaybackUrl(url);
 
         return {
           ok: true,
