@@ -1,9 +1,10 @@
 dist/
 node_modules/
 package-lock.json
-AGENTS.md
 .pnpm-store/
 .npm-cache/
-# Local-only artefacts (debug data, private notes) — never pushed
-docs/
+# Local-only artefacts (debug data, private notes, private env) — never pushed
+docs/debug/
+docs/movian-jellyfin-test-ps3.md
+scripts/.ps3-test.env
 backup/

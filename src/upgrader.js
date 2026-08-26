@@ -3,7 +3,7 @@ const HttpClient = require('./http');
 
 class Upgrader {
   constructor() {
-    this.author = 'LouisMarotta';
+    this.author = 'FloStyle';
     this.repo = 'm7-jellyfin';
     this.endpoint = `https://api.github.com/repos/${this.author}/${this.repo}/releases/latest`;
     this.kvurl = 'jellyfin:upgrader';
