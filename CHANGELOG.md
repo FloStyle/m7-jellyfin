@@ -5,14 +5,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/), versioning follo
 
 ## [Unreleased]
 
-### Changed
-- Modernized README, package metadata and repo hygiene (workflows, assets, editorconfig).
-- Branch layout: `main` (NEO baseline) + `stability` (core fixes merged back into `main` and upstream).
+### Fixed (STAB-1 — validated on real PS3, 2026-08-26)
+- **Playback never initialized** (endless loading): `page.type = 'video'` is now re-asserted right before assigning the video source — `setPageHeader`/API calls reset the page type on Movian, and the refactor had dropped the re-assert the legacy plugin did.
+- **PS3 stalls on the raw `TranscodingUrl`**: new `sanitizePlaybackUrl()` normalizes the Jellyfin 10.11 `?&` (empty first query param) and mid-query `&&` quirks, and comma-encodes query values (`aac,ac3` → `aac%2Cac3`).
+- **No picture/sound on opus/flac files** (`HLS [E] Unsupported estype 0x6`): the device profile now only advertises `aac,ac3,mp3` for HLS, so the server transcodes opus/flac to AAC instead of copying them into the TS (which the PS3 player cannot decode).
+- Audio track index 0 now honored (`atrack >= 0`; `-1` stays the default); server-provided `AudioStreamIndex` is removed before appending the user choice (no duplicates).
+- Subtitle URLs use `stream.Index` (Jellyfin global stream index) instead of the loop variable.
+- `imdbid` videoparam removed (legacy plugin never sent it in practice — typo `Imbd`).
+- Audio codec normalization in `isDirectPlaySafe` (`ac-3`/`eac3` → `ac3`).
 
-### Fixed
-- Jellyfin 10.11.x PlaybackInfo compatibility:
-  - HTTP 400: removed `VideoRange` `ProfileConditionValue` (deleted in Jellyfin 10.11).
-  - HTTP 500: removed the `Video` CodecProfile entry (`NullReferenceException` in `StreamBuilder.ApplyTranscodingConditions`); `VideoAudio` kept.
+### Fixed (Jellyfin 10.11.x PlaybackInfo compatibility)
+- HTTP 400: removed `VideoRange` `ProfileConditionValue` (deleted in Jellyfin 10.11).
+- HTTP 500: removed the `Video` CodecProfile entry (`NullReferenceException` in `StreamBuilder.ApplyTranscodingConditions`); `VideoAudio` kept.
+
+### Changed
+- Modernized README and package metadata and repo hygiene (workflows, assets, editorconfig).
+- Branch layout: `main` (NEO baseline) + `stability` (core fixes merged back into `main` and upstream).
+- Agent-friendly structure: AGENTS.md (YAML frontmatter, external-agent policy), STATE.md, TASKS.md, DECISIONS.md, TESTING.md, CONTRIBUTING.md, SECURITY.md, `agent.md`, `llms.txt`, labels (`agent-ready`, `agent-submission`, ...).
+- PS3 test harness `scripts/test-ps3.sh` (+ `jf-sessions.py`): L0 build/lint, L2a FTP deploy + hash, L2b log scan, L2c playback watch (session position + server transcode sensors). Private env in git-ignored `scripts/.ps3-test.env`.
 
 ### Added
 - Central HTTP client (`src/http.js`) with `api_key`/token scrubbing from logs and structured errors.

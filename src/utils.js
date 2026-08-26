@@ -54,7 +54,7 @@ class Utils {
 
   // TODO: Handle releasese from Ko-fi
   static getLatestPlugin() {
-    return 'https://github.com/LouisMarotta/m7-jellyfin/releases/latest/download/jellyfin.zip';
+    return 'https://github.com/FloStyle/m7-jellyfin/releases/latest/download/jellyfin.zip';
   }
 
   ticksToDate(input = 0) {
