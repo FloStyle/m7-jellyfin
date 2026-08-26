@@ -13,6 +13,9 @@ agent_policy:
   human_review_required: true
   auto_merge_allowed: false
   code_contributions: "mission_only"
+state: "STATE.md"
+tasks: "TASKS.md"
+decisions: "DECISIONS.md"
 capabilities:
   - code_review
   - documentation
@@ -50,8 +53,8 @@ Read this file completely before any code change. Update the relevant sections a
 ## §0 Project status
 
 - **Status: SUSPENDED until the maintainer dispatches a mission.** Do not start code work on your own.
-- The PS3 currently runs the **old (working) zip**. The refactored code in this repo is **NOT deployable as-is** (playback stalls — see §8). No zip is deployed without the maintainer's go-ahead.
-- Jellyfin transcoding needs free GPU VRAM on the server; a heavy GPU service (e.g. an LLM) causes ffmpeg OOM (exit 218, segment 500). Not a plugin bug.
+- **Read [`STATE.md`](STATE.md) first** (global state), then [`TASKS.md`](TASKS.md) (task index) and [`DECISIONS.md`](DECISIONS.md) (rationale).
+- Summary: the PS3 runs the **old (working) zip**; the refactored code is **NOT deployable as-is** (playback stalls — see §8). No zip is deployed without the maintainer's go-ahead. Jellyfin transcoding needs free GPU VRAM on the server.
 
 ## §1 Project identity & goals
 
