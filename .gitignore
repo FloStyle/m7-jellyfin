@@ -6,3 +6,4 @@ package-lock.json
 # Local-only artefacts (debug data, private notes) — never pushed
 docs/
 backup/
+scripts/
