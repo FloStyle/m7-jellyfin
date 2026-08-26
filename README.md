@@ -44,13 +44,12 @@ Dev helpers: `pnpm lint` (ESLint, zero errors required), `pnpm format` (Prettier
 
 ## Contributing
 
-1. Branch from `main`: `feat/<name>` for features, or work on `stability` for core bugfixes
-2. Follow the rules in [`AGENTS.md`](AGENTS.md) (PS3 constraints, security, structured errors)
-3. `pnpm lint` must pass with zero errors
-4. Commit messages: `feat(scope): description`, `fix(scope): description`
-5. Open a PR to `main` (features) — stability fixes are also forwarded upstream
-
+See [CONTRIBUTING.md](CONTRIBUTING.md) — branching, PR checklist, and the mission-based workflow.
 PS3 testing is the real gate: not every code change survives the real hardware. Changes touching playback, device profile or HTTP are tested on-device before merge.
+
+## Agents IA / External AI agents
+
+This repository is open to external AI agents (read, issues, documentation, mission-based code). Full instructions in [AGENTS.md](AGENTS.md) — scope, permissions, contribution format, labels (`agent-ready`, `agent-submission`).
 
 ## Branches
 

@@ -1,0 +1,12 @@
+# Movian Jellyfin (NEO)
+
+Modern Jellyfin client plugin for Movian on PlayStation 3 — Jellyfin 10.9-10.11+, hardened HTTP/session layer, strict PS3 device profile. Public fork of LouisMarotta/m7-jellyfin.
+
+## Links
+
+- README: https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/README.md
+- AGENTS: https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/AGENTS.md
+- CONTRIBUTING: https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/CONTRIBUTING.md
+- SECURITY: https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/SECURITY.md
+- Issues: https://github.com/FloStyle/m7-jellyfin/issues
+- Releases: https://github.com/FloStyle/m7-jellyfin/releases

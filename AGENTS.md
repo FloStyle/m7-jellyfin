@@ -1,13 +1,55 @@
+---
+name: "Movian Jellyfin (NEO)"
+description: "Modern Jellyfin client plugin for Movian on PlayStation 3 — Jellyfin 10.9-10.11+, hardened HTTP/session layer, strict PS3 device profile."
+version: "1.1.4"
+updated: "2026-08-26"
+license: "GPL-3.0-only"
+repository: "https://github.com/FloStyle/m7-jellyfin"
+contact:
+  issues: "https://github.com/FloStyle/m7-jellyfin/issues"
+agent_policy:
+  external_agents_allowed: true
+  authentication_required: false
+  human_review_required: true
+  auto_merge_allowed: false
+  code_contributions: "mission_only"
+capabilities:
+  - code_review
+  - documentation
+  - issue_triage
+  - testing
+  - bug_report
+  - feature_suggestion
+permissions:
+  allowed:
+    - read_repository
+    - comment_issues
+    - propose_pull_requests
+    - run_public_checks
+  prohibited:
+    - delete_branches
+    - merge_pull_requests
+    - modify_workflows
+    - modify_secrets
+    - access_private_data
+resources:
+  readme: "https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/README.md"
+  agents: "https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/AGENTS.md"
+  contributing: "https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/CONTRIBUTING.md"
+  issues_api: "https://api.github.com/repos/FloStyle/m7-jellyfin/issues"
+  releases: "https://github.com/FloStyle/m7-jellyfin/releases"
+---
+
 # AGENTS.md
 
-> Coordination document for AI agents and contributors on **m7-jellyfin (NEO)** — a Jellyfin client plugin for Movian on PlayStation 3.
-> Read this file completely before any code change. Update the relevant sections after completing work.
+Coordination document for AI agents and contributors on **m7-jellyfin (NEO)** — a Jellyfin client plugin for Movian on PlayStation 3.
+Read this file completely before any code change. Update the relevant sections after completing work.
 
 ---
 
 ## §0 Project status
 
-- **Status: SUSPENDED until the maintainer dispatches a mission.** Do not start work on your own.
+- **Status: SUSPENDED until the maintainer dispatches a mission.** Do not start code work on your own.
 - The PS3 currently runs the **old (working) zip**. The refactored code in this repo is **NOT deployable as-is** (playback stalls — see §8). No zip is deployed without the maintainer's go-ahead.
 - Jellyfin transcoding needs free GPU VRAM on the server; a heavy GPU service (e.g. an LLM) causes ffmpeg OOM (exit 218, segment 500). Not a plugin bug.
 
@@ -28,12 +70,36 @@
   - `main` — NEO baseline (default). Features land here.
   - `stability` — core bugfixes/perf. Merged back into `main` AND forwarded upstream via PR.
   - `feat/<name>` — one branch per feature, from `main`. Never commit directly to `main`.
+  - **External agents**: branch prefix `agent/<name>` for any proposed change.
 - **One mission = one agent = one branch.** Check `docs/missions/` (local) for mission specs before starting.
 - Commit messages: `feat(scope): description` / `fix(scope): description` / `refactor(scope): ...` / `docs(scope): ...`.
 - After a mission: update the mission file + this file if needed, then report (files changed, tested, limits).
 - Never force-push a shared branch. Rebase locally on `main` before opening a PR.
 
-## §3 Hard constraints (NEVER violate)
+## §3 External agents — scope & rules
+
+This repository is **open to external AI agents**, with conditions.
+
+### Allowed
+- Read the public repository.
+- Open issues for bugs, and comment on issues labelled `agent-ready` / `good first issue` / `documentation` / `help wanted`.
+- Propose pull requests (small, well-described, tests/lint passing) — **code contributions are mission-only**: no code PRs outside of the missions documented in §9 unless explicitly invited by the maintainer.
+- Improve documentation (README, comments, i18n wording) — always welcome.
+
+### Prohibited
+- Merging pull requests, deleting branches, modifying `.github/workflows/`, `SECURITY.md`, `CODEOWNERS`, lockfiles, or anything that touches secrets/credentials.
+- Running destructive commands, deploying to any device, or accessing private data.
+- Introducing runtime dependencies (devDependencies only).
+
+### Contribution format (external agents)
+1. Branch: `agent/<name>`, from `main`.
+2. Describe the goal clearly in the PR body (what/why/how).
+3. `pnpm lint` must pass with zero errors; add tests where relevant.
+4. Never touch sensitive files (see Prohibited).
+5. PR title: `agent: <short description>` — label `agent-submission`.
+6. Human review is required before any merge. No auto-merge.
+
+## §4 Hard constraints (NEVER violate)
 
 - **CommonJS only**: `require()` / `module.exports`. No `import/export`, no `Promise`/`async/await`/`fetch`. Movian's `http.request()` is synchronous and blocks the UI thread.
 - **Globals**: `Core`, `Plugin`, `require()`, `console.log()`. Modules: `movian/http`, `movian/service`, `movian/page`, `movian/popup`, `movian/image`.
@@ -43,33 +109,34 @@
 - **Network**: Ethernet 100 Mbps (cap ~40 Mbps), Wi-Fi ~15 Mbps.
 - **Jellyfin 10.11 bug**: do NOT include `Type: 'Video'` CodecProfile entries (server `NullReferenceException`). `VideoAudio` only. Do NOT reintroduce `VideoRange` conditions (removed in 10.11).
 
-## §4 Security (logging)
+## §5 Security (logging)
 
 - NEVER log `api_key`, tokens, passwords, or full playback URLs.
 - All HTTP logging goes through `HttpClient.safeLogPath()` (strips scheme, host, query).
 - Playback URLs with `api_key` are marked `// Sensitive URL` in comments.
 - Passwords travel in POST bodies only, never in URL params.
+- Never commit secrets, `.env` files, local credentials, or private IPs/paths.
 
-## §5 Coding conventions
+## §6 Coding conventions
 
 - **Structured results**: every API call returns `{ ok, data?, error?, status? }`. Never throw; never assume `data` without checking `ok` first.
 - **Error handling**: `if (!result.ok) { showApiError(page, result); return; }` — user-friendly messages via `page.error()`/`popup.notify()`.
 - **UI**: `page.appendItem()` lists, `page.appendPassiveItem()` headers, `page.options.createAction/Bool/MultiOpt()`. Never leave a page in permanent loading (`page.loading = false` on done/error).
 - **Defensive parsing**: `data?.Items ?? []`. Never assume response shape.
 - **Naming**: `camelCase.js` files, `PascalCase` classes, `UPPER_SNAKE_CASE` constants, i18n keys `dot.separated`.
-- **Comments**: explain WHY not WHAT; reference sections `// (AGENTS.md §3)`; mark sensitive URLs.
+- **Comments**: explain WHY not WHAT; reference sections `// (AGENTS.md §4)`; mark sensitive URLs.
 - `pnpm lint` must pass with **zero errors** before delivery. `pnpm format` available.
 
-## §6 Mission workflow
+## §7 Mission workflow
 
 1. Read the mission spec in `docs/missions/<mission>.md` (local, not versioned) — it is self-contained.
-2. Create your branch (`stability` for fixes, `feat/<name>` for features).
-3. Implement following §3-§5.
+2. Create your branch (`stability` for fixes, `feat/<name>` for features, `agent/<name>` for external agents).
+3. Implement following §4-§6.
 4. Validate locally: `pnpm lint` zero errors, `pnpm run build` produces `dist/jellyfin.zip`.
 5. Commit + push your branch. Report: files changed, what was tested, known limits.
 6. The maintainer (or the assistant) deploys to the PS3 and runs the on-device test. **Never deploy to the PS3 yourself.**
 
-## §7 Testing checklist (on-device, after any playback/device-profile/HTTP change)
+## §8 Testing checklist (on-device, after any playback/device-profile/HTTP change)
 
 - [ ] Plugin loads without errors in Movian console
 - [ ] No log line contains tokens/keys/passwords/full URLs
@@ -80,24 +147,38 @@
 - [ ] Resume position accurate
 - [ ] ESLint zero errors
 
-## §8 Known issues & workarounds
+## §9 Known issues & workarounds
 
 | Issue | Workaround |
 |---|---|
 | PS3 stalls on raw `TranscodingUrl` (leading `?&`, duplicated `AudioStreamIndex`, unencoded commas) | Sanitize the URL before handing it to the player (mission stability-1) |
-| Jellyfin 10.11 NRE on `Video` CodecProfile | Keep `VideoAudio` only (§3) |
+| Jellyfin 10.11 NRE on `Video` CodecProfile | Keep `VideoAudio` only (§4) |
 | `atrack > 0` skips audio track index 0 (`view.js`) | Use `atrack >= 0` (`-1` = default) |
 | Subtitle URL uses loop var `j` (`view.js`) | Use `stream.Index` |
 | Server ffmpeg OOM when GPU is busy | Free VRAM before Jellyfin tests (environmental) |
 | Updater targets upstream GitHub | Point to `FloStyle/m7-jellyfin` releases (plan: drop-in updates) |
 
-## §9 Backlog (short)
+## §10 Backlog (short)
 
 See `docs/missions/` for full specs:
 - **stability-1**: TranscodingUrl sanitization + trivial playback bugs (blocking — the fork stays undeployable until done)
 - **stability-2**: upgrader → `FloStyle/m7-jellyfin` releases (drop-in update plan: `docs/plans/plan-drop-in-updates.md`)
 - **NEO roadmap**: language prefs, Ethernet/Wi-Fi mode, dynamic home, rich details, QuickConnect/QR, multi-user, structural refactor (phased)
 
+## §11 Labels used by this repo
+
+- `agent-ready` — issues open for external agents
+- `agent-submission` — PRs submitted by external agents
+- `agent-review-required` — agent work waiting for human review
+- `needs-human-review` — anything needing a maintainer decision
+- `good first issue` / `help wanted` / `documentation` / `bug` — standard triage
+
+External agents should only work on issues carrying `agent-ready` (or the standard triage labels above) and must tag their PRs `agent-submission`.
+
+## §12 Security reporting
+
+Found a vulnerability? Open an issue (private if possible) — do NOT post tokens, credentials or full playback URLs anywhere. See `SECURITY.md`.
+
 ---
 
-*Maintained by the project lead. Agents update §6/§7/§8 and the mission files; structural sections (§1-§5) change only with maintainer approval.*
+*Maintained by the project lead. Agents update §8/§9/§10 and the mission files; structural sections (§1-§6) change only with maintainer approval.*
