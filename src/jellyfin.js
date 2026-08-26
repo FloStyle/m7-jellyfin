@@ -67,7 +67,10 @@ class Jellyfin {
           let download =
             typeof popup.message === 'function'
               ? popup.message(
-                  "A new update for Jellyfin is available! Press 'Ok' to download it",
+                  this.trans.l('plugin.update_available', {
+                    plugin_name: this.metadata.title,
+                    version: version,
+                  }),
                   true,
                   true,
                 )

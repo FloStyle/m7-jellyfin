@@ -682,20 +682,20 @@ class View {
     page.model.contents = 'grid';
 
     page.loading = false;
-    page.appendPassiveItem(
+    page.appendItem(
       'directory',
-      { url: '' },
+      { url: 'https://github.com/FloStyle/m7-jellyfin' },
       {
         title: this.trans.l('credits.github'),
         icon: Plugin.path + 'assets/github.png',
       },
     );
-    page.appendPassiveItem(
+    page.appendItem(
       'directory',
-      { url: '' },
+      { url: 'https://github.com/FloStyle/m7-jellyfin/releases' },
       {
-        title: this.trans.l('credits.kofi'),
-        icon: Plugin.path + 'assets/kofi.png',
+        title: this.trans.l('credits.releases'),
+        icon: Plugin.path + 'assets/logo.png',
       },
     );
   };
