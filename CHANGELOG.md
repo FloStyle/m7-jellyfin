@@ -23,6 +23,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/), versioning follo
 - Branch layout: `main` (NEO baseline) + `stability` (core fixes merged back into `main` and upstream).
 - Agent-friendly structure: AGENTS.md (YAML frontmatter, external-agent policy), STATE.md, TASKS.md, DECISIONS.md, TESTING.md, CONTRIBUTING.md, SECURITY.md, `agent.md`, `llms.txt`, labels (`agent-ready`, `agent-submission`, ...).
 - PS3 test harness `scripts/test-ps3.sh` (+ `jf-sessions.py`): L0 build/lint, L2a FTP deploy + hash, L2b log scan, L2c playback watch (session position + server transcode sensors). Private env in git-ignored `scripts/.ps3-test.env`.
+- Update pipeline (STAB-2): built-in upgrader + download URL now point to `FloStyle/m7-jellyfin` releases; `scripts/release.sh` cuts releases (version bump + tag → GitHub Actions builds/publishes `dist/jellyfin.zip`); upgrader stays silent when no release exists.
 
 ### Added
 - Central HTTP client (`src/http.js`) with `api_key`/token scrubbing from logs and structured errors.
