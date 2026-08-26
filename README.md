@@ -40,6 +40,18 @@ pnpm run build
 
 Generates `dist/jellyfin.zip`.
 
+Dev helpers: `pnpm lint` (ESLint, zero errors required), `pnpm format` (Prettier), `libs/` holds Movian type definitions for IDE support.
+
+## Contributing
+
+1. Branch from `main`: `feat/<name>` for features, or work on `stability` for core bugfixes
+2. Follow the rules in [`AGENTS.md`](AGENTS.md) (PS3 constraints, security, structured errors)
+3. `pnpm lint` must pass with zero errors
+4. Commit messages: `feat(scope): description`, `fix(scope): description`
+5. Open a PR to `main` (features) — stability fixes are also forwarded upstream
+
+PS3 testing is the real gate: not every code change survives the real hardware. Changes touching playback, device profile or HTTP are tested on-device before merge.
+
 ## Branches
 
 | Branch | Purpose |

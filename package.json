@@ -1,11 +1,12 @@
 {
   "name": "movian7-jellyfin",
   "version": "1.1.4",
-  "description": "Stream your TV Shows and Movies from your <a href=\"https://jellyfin.org/\">Jellyfin</a> instance.",
+  "description": "Modern Jellyfin client for Movian (PlayStation 3) - hardened for Jellyfin 10.9-10.11+, strict PS3 device profile, HLS transcoding.",
   "keywords": [
     "swc",
     "movian",
     "jellyfin",
+    "playstation-3",
     "javascript",
     "eslint",
     "prettier"
@@ -13,12 +14,19 @@
   "author": "Louis Biagio Marotta <loumb31@gmail.com>",
   "license": "GPL-3.0-only",
   "main": "jellyfin.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FloStyle/m7-jellyfin.git"
+  },
+  "homepage": "https://github.com/FloStyle/m7-jellyfin#readme",
   "scripts": {
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
     "build": "swc src -d dist && node ./bin/build.js",
     "dev": "npm run build && node ./bin/dev.js",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src",
+    "format": "prettier --write src/ bin/",
+    "format:check": "prettier --check src/ bin/"
   },
   "devDependencies": {
     "@guarapi/eslint-config-guarapi": "^0.1.3",
