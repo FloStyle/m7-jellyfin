@@ -118,9 +118,12 @@ cmd_watch() {
       name=$(echo "$state" | cut -d'|' -f1); pos=$(echo "$state" | cut -d'|' -f2)
       method=$(echo "$state" | cut -d'|' -f3)
       if [ "$pos" -gt 0 ] 2>/dev/null; then
-        ok "PLAYING: '$name' | pos=${pos} ticks | method=$method"
-        if [ "$pos" = "$last_pos" ]; then stable=$((stable + 1)); else stable=0; last_pos=$pos; fi
-        [ $stable -ge 2 ] && { ok "position advancing — playback confirmed"; return 0; }
+        if [ "$pos" != "$last_pos" ] && [ "$last_pos" -gt 0 ] 2>/dev/null; then
+          ok "position advancing: ${last_pos} -> ${pos} ticks — playback confirmed"
+          return 0
+        fi
+        last_pos=$pos
+        warn "PLAYING: '$name' | pos=${pos} | method=$method (waiting for advance)"
       fi
     fi
     # Fallback sensor: server-side transcode started in this window (works with the old zip, which does not report positions)
