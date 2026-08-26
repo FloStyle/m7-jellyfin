@@ -164,6 +164,7 @@ This repository is **open to external AI agents**, with conditions.
 | Subtitle URL uses loop var `j` (`view.js`) | Use `stream.Index` |
 | Server ffmpeg OOM when GPU is busy | Free VRAM before Jellyfin tests (environmental) |
 | `POST /Sessions/Playing/Progress` → « Authentication without realm » | Session reporting auth broken (observed in PS3 logs) — fix in STAB-3: verify auth header/URL on session POSTs |
+| `HLS [E] Unsupported estype 0x6 on pid 257` → no picture/sound | Audio codec copied into the HLS TS is unsupported by Movian (opus/flac in TS = stream_type 0x6). Cause: old profile declares `aac,opus,flac` → server copies opus. **Fixed in the new profile (`aac,ac3,mp3` only)** — verify STAB-1 keeps it that way. Proof: same title, `AudioCodec=aac` → TS h264+AAC plays; `aac,opus,flac` → TS with opus → player rejects |
 | Updater targets upstream GitHub | Point to `FloStyle/m7-jellyfin` releases (plan: drop-in updates) |
 
 ## §10 Backlog (short)
