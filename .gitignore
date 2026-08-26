@@ -1,7 +1,6 @@
 dist/
 node_modules/
 package-lock.json
-AGENTS.md
 .pnpm-store/
 .npm-cache/
 # Local-only artefacts (debug data, private notes) — never pushed
