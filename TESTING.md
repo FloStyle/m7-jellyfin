@@ -60,3 +60,19 @@ Deploy procedure: `pnpm run build` → FTP upload to the PS3 → verify hash →
 ## Delivery contract for agents
 
 Every mission delivery must state, in the report: L0 result (lint/build), L1 result (which endpoints validated, with statuses), any L2/L3 steps done, and the exact commit(s). If a level was skipped, say why. Never claim "tested" without naming the level and the environment.
+
+## Automated harness (scripts/test-ps3.sh)
+
+The repo ships a small automation harness for the L0-L2 loop (see `scripts/test-ps3.sh` — usage in its header):
+
+- `status` — environment probe (PS3 FTP, Jellyfin API, backup zip)
+- `build` — L0 (lint + build)
+- `deploy` — L2a: FTP upload + hash verification
+- `logs` — L2b: pull Movian logs, scan the **current** log only (rotation keeps history in movian-1..5 — scanning them produces false positives)
+- `watch [secs]` — L2c: watch Jellyfin `/Sessions` for a Movian session with an **advancing PositionTicks** (playback confirmed) and reports the PlayMethod
+
+**Private environment**: hosts/keys are read from `scripts/.ps3-test.env` (git-ignored, not shipped). The public script has placeholder defaults only.
+
+**Security note**: the Movian player itself logs full playback URLs including the `api_key` (`Settings initialized for URL ...?api_key=...`) — PS3 logs are therefore sensitive and must never be shared raw; the harness only greps patterns, it does not publish logs.
+
+**Known limitation**: remotely launching Movian via webMAN `load.ps3` returns OK but does not reliably start the app on this setup — Movian is launched manually from the XMB, then the plugin is opened and a title started; the harness validates everything else automatically.
