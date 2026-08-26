@@ -158,7 +158,7 @@ This repository is **open to external AI agents**, with conditions.
 
 | Issue | Workaround |
 |---|---|
-| PS3 stalls on raw `TranscodingUrl` (leading `?&`, duplicated `AudioStreamIndex`, unencoded commas) | Sanitize the URL before handing it to the player (mission stability-1) |
+| PS3 stalls on raw `TranscodingUrl` (leading `?&`, duplicated `AudioStreamIndex`, unencoded commas) | ✅ **FIXED (STAB-1)** — `sanitizePlaybackUrl` normalizes `?&`/`&&` + comma-encodes; `page.type='video'` re-asserted before source (the missing piece: playback never initialized) |
 | Jellyfin 10.11 NRE on `Video` CodecProfile | Keep `VideoAudio` only (§4) |
 | `atrack > 0` skips audio track index 0 (`view.js`) | Use `atrack >= 0` (`-1` = default) |
 | Subtitle URL uses loop var `j` (`view.js`) | Use `stream.Index` |
