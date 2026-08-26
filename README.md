@@ -4,7 +4,7 @@
 
 # Movian Jellyfin (NEO)
 
-A modern, hardened **Jellyfin client for Movian** — designed for **PlayStation 3**, tested against **Jellyfin 10.9 → 10.11+**.
+A modern, hardened **Jellyfin client for Movian** — built for **PlayStation 3**, tested against **Jellyfin 10.11+**.
 
 Fork of [LouisMarotta/m7-jellyfin](https://github.com/LouisMarotta/m7-jellyfin) with a reworked playback pipeline, a strict PS3 device profile, and a hardened HTTP/session layer.
 
@@ -12,72 +12,40 @@ Fork of [LouisMarotta/m7-jellyfin](https://github.com/LouisMarotta/m7-jellyfin) 
 [![Jellyfin](https://img.shields.io/badge/Jellyfin-10.9--10.11-blue)](https://jellyfin.org)
 [![Platform](https://img.shields.io/badge/Platform-PS3%20%2F%20Movian-green)](https://movian.tv)
 
-## Features
+## Install (PlayStation 3)
 
-- **Stable playback on modern Jellyfin servers** (10.11.11 validated): fixed PlaybackInfo HTTP 400/500 caused by outdated DeviceProfile fields
-- **Strict PS3 device profile**: H.264 ≤ 1080p (level 4.1, 8-bit SDR), AAC/AC3/MP3 ≤ 5.1 direct play; HEVC/4K/HDR/10-bit/TrueHD/DTS-HD → server-side HLS transcode
-- **Hardened HTTP layer**: centralized client, structured errors, `api_key`/token scrubbing from logs
-- **Playback session reporting** to the Jellyfin dashboard (Playing / Progress / Stopped)
-- Bounded caching and pagination (PS3 memory-safe)
-- Subtitles (SRT/ASS external, bitmap burned-in via transcode), music playback
-- i18n: English, Italian
-
-## Installing (PlayStation 3)
-
-1. Build the plugin zip (see below) or grab a release zip
+1. Build the zip (below) or grab it from [Releases](https://github.com/FloStyle/m7-jellyfin/releases)
 2. Copy `jellyfin.zip` to `/dev_hdd0/game/HTSS00003/USRDIR/settings/installedplugins/` (FTP or USB)
-3. Restart Movian — the plugin loads from the new zip
-4. In the plugin settings, enter your Jellyfin server address and credentials
+3. Restart Movian, then enter your Jellyfin server address + credentials in the plugin settings
 
-Other Movian-capable devices work the same way (drop the zip into `settings/installedplugins`).
+Drop-in safe: the plugin id is unchanged, your settings survive updates.
 
-## Building
+## Build
 
 ```bash
 pnpm i
-pnpm run build
+pnpm run build   # → dist/jellyfin.zip
 ```
 
-Generates `dist/jellyfin.zip`.
-
-Dev helpers: `pnpm lint` (ESLint, zero errors required), `pnpm format` (Prettier), `libs/` holds Movian type definitions for IDE support.
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) — branching, PR checklist, and the mission-based workflow.
-PS3 testing is the real gate: not every code change survives the real hardware. Changes touching playback, device profile or HTTP are tested on-device before merge.
-
-## Agents IA / External AI agents
-
-This repository is open to external AI agents (read, issues, documentation, mission-based code). Full instructions in [AGENTS.md](AGENTS.md) — scope, permissions, contribution format, labels (`agent-ready`, `agent-submission`).
+Dev: `pnpm lint` (zero errors), `pnpm format`, `libs/` = Movian type definitions for IDE.
 
 ## Branches
 
 | Branch | Purpose |
 |---|---|
-| `main` | **NEO** — modern development baseline (new features, UI, QuickConnect, multi-user) |
-| `stability` | Core bugfixes & performance — merged back into `main`, and upstream via pull request |
+| `main` | NEO baseline (default) — modern features |
+| `stability` | Core fixes & performance → merged into `main` + upstream PR |
+
+## Contributing & agents
+
+- Humans: see [CONTRIBUTING.md](CONTRIBUTING.md)
+- External AI agents: read [AGENTS.md](AGENTS.md) — scope, permissions, mission workflow
+- Project state/tasks/decisions: [STATE.md](STATE.md) · [TASKS.md](TASKS.md) · [DECISIONS.md](DECISIONS.md)
+- Testing protocol & validated versions: [TESTING.md](TESTING.md)
 
 ## Compatibility
 
-| Capability | PS3 / Movian |
-|---|---|
-| H.264/AVC | Level 4.1, High Profile, 1080p, 8-bit SDR |
-| MPEG-2, VC-1 | Decodable (handled conservatively — direct play kept strict) |
-| HEVC / AV1 / VP9 / 4K / HDR / 10-bit | **Not supported** — server transcodes to 1080p H.264 HLS |
-| Audio | AAC, AC3, MP3 (≤ 5.1); DTS passthrough; others transcoded |
-| Server | Jellyfin 10.9.0 minimum, 10.11.x primary target |
-
-## Known limitations
-
-- Jellyfin 10.11.x throws a server-side `NullReferenceException` when a `Video` CodecProfile entry is present — the profile intentionally ships `VideoAudio` only
-- PS3 heap is < 64 MB: list queries are bounded, caches are capped
-- Jellyfin transcoding needs free GPU VRAM on the server (an LLM loaded on the same GPU starves ffmpeg → segment 500)
-
-## Acknowledgements
-
-- [Movian Documentation](https://buksa.github.io/movian-docs/) ([Buksa](https://github.com/Buksa))
-- [Jellyfin Documentation](https://api.jellyfin.org/)
+H.264 ≤ 1080p (level 4.1, 8-bit SDR) direct play; AAC/AC3/MP3 ≤ 5.1. HEVC/AV1/VP9/4K/HDR/10-bit → server HLS transcode. See [AGENTS.md](AGENTS.md) §4 for the full constraint list.
 
 ## License
 

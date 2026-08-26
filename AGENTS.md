@@ -16,6 +16,7 @@ agent_policy:
 state: "STATE.md"
 tasks: "TASKS.md"
 decisions: "DECISIONS.md"
+testing: "TESTING.md"
 capabilities:
   - code_review
   - documentation
@@ -140,6 +141,9 @@ This repository is **open to external AI agents**, with conditions.
 6. The maintainer (or the assistant) deploys to the PS3 and runs the on-device test. **Never deploy to the PS3 yourself.**
 
 ## §8 Testing checklist (on-device, after any playback/device-profile/HTTP change)
+
+> Full protocol (levels L0-L3, version matrix, deployment procedure): **[TESTING.md](TESTING.md)**.
+> Minimum contract: L0 (lint/build) always; L1 (API validation) for API changes; L2 (on-device) mandatory for playback/device-profile/HTTP/upgrader changes.
 
 - [ ] Plugin loads without errors in Movian console
 - [ ] No log line contains tokens/keys/passwords/full URLs

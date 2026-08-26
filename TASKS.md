@@ -15,7 +15,7 @@ updated: "2026-08-26"
 | id | title | status | priority | branch | spec |
 |---|---|---|---|---|---|
 | STAB-1 | Sanitize `TranscodingUrl` before player + trivial playback bugs (`atrack >= 0`, subtitle `stream.Index`, codec normalization) | todo | critical | `stability` | `docs/missions/stability-1-transcoding-url.md` |
-| STAB-2 | Upgrader → `FloStyle/m7-jellyfin` releases (drop-in updates) | todo | high | `stability` | `docs/plans/plan-drop-in-updates.md` |
+| STAB-2 | Upgrader → `FloStyle/m7-jellyfin` releases (drop-in updates) | todo | high | `stability` | `docs/missions/stability-2-updater.md` + `docs/plans/plan-drop-in-updates.md` |
 | NEO-A1 | Audio/subtitle language preferences (`/Users/{id}`) | todo | normal | `main` | `docs/missions/neo-roadmap.md` |
 | NEO-A2 | Ethernet/Wi-Fi connection mode (40/15 Mbps) | todo | normal | `main` | `docs/missions/neo-roadmap.md` |
 | NEO-A3 | Session/multi-user handling (401 → login, switch user) | todo | normal | `main` | `docs/missions/neo-roadmap.md` |
