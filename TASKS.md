@@ -8,7 +8,7 @@ updated: "2026-08-26"
 # TASKS.md — Task Index
 
 > Statuses: `todo` → `assigned` → `in_progress` → `review` → `done` (or `blocked` / `cancelled`).
-> One mission = one agent = one branch. Mission specs live in `docs/missions/` (local, not versioned).
+> One mission = one agent = one branch. Mission specs live in `docs/missions/` (versioned).
 
 ## Active tasks
 

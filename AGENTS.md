@@ -133,7 +133,7 @@ This repository is **open to external AI agents**, with conditions.
 
 ## §7 Mission workflow
 
-1. Read the mission spec in `docs/missions/<mission>.md` (local, not versioned) — it is self-contained.
+1. Read the mission spec in `docs/missions/<mission>.md` (versioned; local environment details are in the unversioned `docs/debug/` + `scripts/.ps3-test.env`) — it is self-contained.
 2. Create your branch (`stability` for fixes, `feat/<name>` for features, `agent/<name>` for external agents).
 3. Implement following §4-§6.
 4. Validate locally: `pnpm lint` zero errors, `pnpm run build` produces `dist/jellyfin.zip`.
