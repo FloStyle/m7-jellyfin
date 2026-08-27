@@ -14,9 +14,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Build
-        run: pnpm install --frozen-lockfile && pnpm run build
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Build plugin
+        run: pnpm run build
+      - name: Build source tarball
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          tar czf "m7-jellyfin-${VERSION}.tar.gz" \
+            --exclude='dist' \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='scripts/.ps3-test.env' \
+            .
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          files: "dist/jellyfin.zip"
+          files: |
+            dist/jellyfin.zip
+            m7-jellyfin-${{ github.ref_name }}.tar.gz
