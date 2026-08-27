@@ -2,8 +2,8 @@
 # release.sh — cut a NEO release: bump version, tag, push.
 # GitHub Actions (release.yml) builds dist/jellyfin.zip + source tarball
 # and publishes them as a stable release.
-# For nightly builds, push to main directly or run:
-#   ./scripts/release.sh --nightly
+# For dev builds, push to main directly or run:
+#   ./scripts/release.sh --dev
 #
 # Usage:
 #   ./scripts/release.sh 1.2.0          # stable release
@@ -15,11 +15,11 @@ cd "$(dirname "$0")/.."
 
 command -v gh >/dev/null || echo "⚠️ gh not found"
 
-if [ "${1:-}" = "--nightly" ]; then
-  echo "🌙 Nightly build — pushing to main to trigger the nightly workflow."
+if [ "${1:-}" = "--dev" ]; then
+  echo "🔧 Dev build — pushing to main to trigger the dev build workflow."
   git diff --quiet || { echo "⚠️ uncommitted changes — commit or stash them first"; exit 1; }
   git push origin main
-  echo "✅ Pushed to main — GitHub Actions will publish the nightly release automatically."
+  echo "✅ Pushed to main — GitHub Actions will publish the dev build automatically."
   exit 0
 fi
 
