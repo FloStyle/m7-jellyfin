@@ -1,3 +1,4 @@
+# TODO [RENAME-TRACKER]: Update all repository URLs and metadata references from 'FloStyle/m7-jellyfin' to 'FloStyle/m7-jellyfin-neo' before executing the repo rename.
 name: Stable Release
 
 on:
@@ -83,7 +84,7 @@ jobs:
 
             ---
 
-            **Commit:** [${{ github.sha }}](https://github.com/FloStyle/m7-jellyfin/commit/${{ github.sha }})
+            **Commit:** [${{ github.sha }}](https://github.com/FloStyle/m7-jellyfin/commit/${{ github.sha }}) <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
           make_latest: true
           files: |
             dist/jellyfin.zip

@@ -1,0 +1,75 @@
+# TODO [RENAME-TRACKER]: Update all repository URLs and metadata references from 'FloStyle/m7-jellyfin' to 'FloStyle/m7-jellyfin-neo' before executing the repo rename.
+name: Release Drafter
+
+# Configuration for release-drafter:
+# See https://github.com/release-drafter/release-drafter#configuration
+labels:
+  - name: "🚀 features"
+    description: "New features and enhancements"
+    color: "0e8a16"
+  - name: "🐛 bug fixes"
+    description: "Bug fixes and stability improvements"
+    color: "d73a4a"
+  - name: "🧰 maintenance"
+    description: "Code cleanup, refactoring, and tooling"
+    color: "cfd3d7"
+  - name: "📚 documentation"
+    description: "Documentation updates"
+    color: "0075ca"
+  - name: "⚡ performance"
+    description: "Performance improvements"
+    color: "a2eeef"
+
+categories:
+  - title: "🚀 Features"
+    labels:
+      - "🚀 features"
+      - "feature"
+      - "enhancement"
+  - title: "🐛 Bug Fixes"
+    labels:
+      - "🐛 bug fixes"
+      - "bug"
+      - "fix"
+  - title: "🧰 Maintenance"
+    labels:
+      - "🧰 maintenance"
+      - "refactor"
+      - "chore"
+      - "dependencies"
+  - title: "📚 Documentation"
+    labels:
+      - "📚 documentation"
+      - "docs"
+
+change-template: "- $TITLE (#$NUMBER) by @$AUTHOR"
+change-title-escapes: '<'
+name-template: "v{{version}}"
+tag-template: "v{{version}}"
+template: |
+  ## 🟢 Release ${{version}}
+
+  ${{CHANGES}}
+
+  ---
+
+  ### 📦 Installation (PlayStation 3)
+
+  1. Download `jellyfin.zip` from the assets below
+  2. Copy to `/dev_hdd0/game/HTSS00003/USRDIR/settings/installedplugins/` (via FTP or USB)
+  3. Restart Movian — the plugin will appear in the plugins list
+  4. Enter your Jellyfin server address + credentials in plugin settings
+
+  > **Drop-in safe:** The plugin ID is unchanged (`jellyfin`). Your settings survive updates.
+
+  ### ✅ Verification
+
+  | Check | Command/Action |
+  |---|---|
+  | SHA256 | `sha256sum jellyfin.zip` → match `SHA256SUMS.txt` |
+  | Plugin loads | Movian console shows no errors on startup |
+  | Playback | Start a video — position reports to Jellyfin dashboard |
+
+  ---
+
+  **Full Changelog:** [Compare ${{previous_version}}...${{version}}](https://github.com/FloStyle/m7-jellyfin/compare/${{previous_version}}...${{version}})

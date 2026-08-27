@@ -4,7 +4,7 @@
 
 If you find a security issue in this plugin (token leakage, credential exposure, unsafe URL handling, ...):
 
-1. **Open an issue** at https://github.com/FloStyle/m7-jellyfin/issues — mark it private/security if possible.
+1. **Open an issue** at https://github.com/FloStyle/m7-jellyfin/issues — mark it private/security if possible. <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
 2. Describe the issue and the affected version — **do not post tokens, passwords, or full playback URLs** in the report.
 3. If you must share sensitive details, use a maintainer contact through the issue.
 

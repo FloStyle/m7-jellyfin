@@ -4,9 +4,9 @@ description: "Modern Jellyfin client plugin for Movian on PlayStation 3 — Jell
 version: "1.5.0"
 updated: "2026-08-26"
 license: "GPL-3.0-only"
-repository: "https://github.com/FloStyle/m7-jellyfin"
+repository: "https://github.com/FloStyle/m7-jellyfin" <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
 contact:
-  issues: "https://github.com/FloStyle/m7-jellyfin/issues"
+  issues: "https://github.com/FloStyle/m7-jellyfin/issues" <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
 agent_policy:
   external_agents_allowed: true
   authentication_required: false
@@ -37,11 +37,11 @@ permissions:
     - modify_secrets
     - access_private_data
 resources:
-  readme: "https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/README.md"
-  agents: "https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/AGENTS.md"
-  contributing: "https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/CONTRIBUTING.md"
-  issues_api: "https://api.github.com/repos/FloStyle/m7-jellyfin/issues"
-  releases: "https://github.com/FloStyle/m7-jellyfin/releases"
+  readme: "https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/README.md" <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
+  agents: "https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/AGENTS.md" <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
+  contributing: "https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/CONTRIBUTING.md" <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
+  issues_api: "https://api.github.com/repos/FloStyle/m7-jellyfin/issues" <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
+  releases: "https://github.com/FloStyle/m7-jellyfin/releases" <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
 ---
 
 # AGENTS.md
@@ -61,7 +61,7 @@ Read this file completely before any code change. Update the relevant sections a
 
 | Field | Value |
 |---|---|
-| Repository | `FloStyle/m7-jellyfin` (public fork) |
+| Repository | `FloStyle/m7-jellyfin` (public fork) | <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
 | Upstream | `LouisMarotta/m7-jellyfin` (root; fixes forwarded via PR) |
 | Target | PS3 / Movian 7 (ECMAScript plugin, CommonJS) |
 | Server | Jellyfin 10.9.x → 10.11.x (primary tested: 10.11.11) |

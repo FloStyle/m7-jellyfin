@@ -16,9 +16,9 @@
   "main": "jellyfin.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FloStyle/m7-jellyfin.git"
+    "url": "git+https://github.com/FloStyle/m7-jellyfin.git" <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
   },
-  "homepage": "https://github.com/FloStyle/m7-jellyfin#readme",
+  "homepage": "https://github.com/FloStyle/m7-jellyfin#readme", <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
   "scripts": {
     "clean": "rimraf dist",
     "prebuild": "npm run clean",

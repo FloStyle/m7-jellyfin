@@ -686,7 +686,7 @@ class View {
     page.loading = false;
     page.appendItem(
       'directory',
-      { url: 'https://github.com/FloStyle/m7-jellyfin' },
+      { url: 'https://github.com/FloStyle/m7-jellyfin' }, <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
       {
         title: this.trans.l('credits.github'),
         icon: Plugin.path + 'assets/github.png',
@@ -694,7 +694,7 @@ class View {
     );
     page.appendItem(
       'directory',
-      { url: 'https://github.com/FloStyle/m7-jellyfin/releases' },
+      { url: 'https://github.com/FloStyle/m7-jellyfin/releases' }, <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
       {
         title: this.trans.l('credits.releases'),
         icon: Plugin.path + 'assets/logo.png',

@@ -1,3 +1,4 @@
+# TODO [RENAME-TRACKER]: Update all repository URLs and metadata references from 'FloStyle/m7-jellyfin' to 'FloStyle/m7-jellyfin-neo' before executing the repo rename.
 name: Release
 
 on:
@@ -36,9 +37,17 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build plugin
         run: pnpm run build
+      - name: Generate SHA256 checksums
+        run: |
+          sha256sum dist/jellyfin.zip > SHA256SUMS.txt
+          echo "SHA256 checksums generated:"
+          cat SHA256SUMS.txt
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/jellyfin.zip
             m7-jellyfin-${{ github.ref_name }}.tar.gz
+            SHA256SUMS.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,3 +1,4 @@
+# TODO [RENAME-TRACKER]: Update all repository URLs and metadata references from 'FloStyle/m7-jellyfin' to 'FloStyle/m7-jellyfin-neo' before executing the repo rename.
 name: Dev Build
 
 on:
@@ -48,7 +49,7 @@ jobs:
             Auto-built from `main` — **not for production use**.
 
             Build date: ${{ github.event.head_commit.timestamp || 'scheduled' }}
-            Commit: [${{ github.sha }}](https://github.com/FloStyle/m7-jellyfin/commit/${{ github.sha }})
+            Commit: [${{ github.sha }}](https://github.com/FloStyle/m7-jellyfin/commit/${{ github.sha }}) <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
           prerelease: true
           make_latest: false
           files: |
