@@ -129,12 +129,13 @@ class Session {
   /**
    * Report playback start to Jellyfin (AGENTS.md §16.1).
    * Fire-and-forget — never blocks playback.
+   * On 401 or network_error, stop reporting cleanly (AGENTS.md §16.4).
    * @private
    */
   _reportPlaying() {
     if (!this.itemId || !this.playSessionId) return;
 
-    this.api.request(this.api.host + '/Sessions/Playing', {
+    var result = this.api.request(this.api.host + '/Sessions/Playing', {
       method: 'POST',
       headers: this.api.getDefaultHeaders(),
       postdata: JSON.stringify({
@@ -150,17 +151,19 @@ class Session {
         SubtitleStreamIndex: this.subtitleStreamIndex,
       }),
     });
+    this._handleReportError(result);
   }
 
   /**
    * Report playback progress to Jellyfin (AGENTS.md §16.2).
    * Fire-and-forget — never blocks playback.
+   * On 401 or network_error, stop reporting cleanly (AGENTS.md §16.4).
    * @private
    */
   _reportProgress() {
     if (!this.itemId || !this.playSessionId) return;
 
-    this.api.request(this.api.host + '/Sessions/Playing/Progress', {
+    var result = this.api.request(this.api.host + '/Sessions/Playing/Progress', {
       method: 'POST',
       headers: this.api.getDefaultHeaders(),
       postdata: JSON.stringify({
@@ -174,6 +177,7 @@ class Session {
         PositionTicks: this.positionTicks,
       }),
     });
+    this._handleReportError(result);
   }
 
   /**
@@ -196,6 +200,20 @@ class Session {
         Failed: false,
       }),
     });
+  }
+
+  /**
+   * Handle a report error: on 401 or network_error, stop reporting cleanly.
+   * Logs are emitted by HttpClient — this only stops the timer to avoid
+   * repeated failures after auth is lost (AGENTS.md §16.4).
+   * @private
+   */
+  _handleReportError(result) {
+    if (!result || result.ok) return;
+    if (result.error === 'unauthorized' || result.error === 'network_error') {
+      console.log('[session] reporting stopped (' + result.error + ')');
+      this.stop();
+    }
   }
 }
 
