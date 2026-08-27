@@ -1,0 +1,68 @@
+# Cursor Rules — m7-jellyfin (NEO)
+
+## Project Summary
+
+Jellyfin client plugin for Movian on PlayStation 3. CommonJS ECMAScript, strict PS3 device profile, Jellyfin 10.9–10.11+ hardened.
+
+## Build Target
+
+```bash
+pnpm run build   # → dist/jellyfin.zip (plugin binary for PS3)
+```
+
+The zip contains:
+- `plugin.json` (generated metadata)
+- `src/` (compiled JS via SWC)
+- `assets/`, `views/`, `locales/`
+
+## Mandatory Pre-PR Checklist
+
+Before any PR, you MUST:
+
+1. **Lint passes with zero errors**:
+   ```bash
+   pnpm lint
+   ```
+
+2. **Build succeeds**:
+   ```bash
+   pnpm run build
+   ```
+
+3. **No forbidden patterns in `src/`**:
+   - No `import`/`export` (CommonJS only)
+   - No `async`/`await`/`Promise`
+   - No `fetch` (use `movian/http`)
+   - No unbounded arrays (always use `Limit` + `StartIndex`)
+
+## Coding Standards
+
+- **Structured results**: `{ ok, data?, error?, status? }` — never throw
+- **Defensive parsing**: `data?.Items ?? []`
+- **UI**: `page.appendItem()`, `page.appendPassiveItem()`, never leave pages in loading state
+- **Naming**: `camelCase.js`, `PascalCase` classes, `UPPER_SNAKE_CASE` constants
+- **i18n keys**: `dot.separated` format
+
+## PS3 Constraints (NEVER violate)
+
+- H.264 ≤ 1080p / level 4.1 / 8-bit SDR direct play
+- AAC/AC3/MP3 ≤ 6ch audio direct play
+- All other codecs → server transcode to HLS `ts`
+- Memory: < 64 MB heap, bounded caches only
+
+## Security
+
+- NEVER log `api_key`, tokens, passwords, or full playback URLs
+- Use `HttpClient.safeLogPath()` for URL logging
+- Mark sensitive URLs: `// Sensitive URL`
+
+## Branch Workflow
+
+- `main` — NEO baseline
+- `stability` — core fixes (merged to `main` + upstream PR)
+- `feat/<name>` — features from `main`
+- **External agents**: `agent/<name>` prefix
+
+## Agent Missions
+
+Read `.github/agent-workspace/AGENTS.md` for mission protocols and external agent policies.

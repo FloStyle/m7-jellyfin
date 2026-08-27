@@ -38,7 +38,7 @@ permissions:
     - access_private_data
 resources:
   readme: "https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/README.md" <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
-  agents: "https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/AGENTS.md" <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
+  agents: "https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/.github/agent-workspace/AGENTS.md" <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
   contributing: "https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/CONTRIBUTING.md" <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
   issues_api: "https://api.github.com/repos/FloStyle/m7-jellyfin/issues" <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
   releases: "https://github.com/FloStyle/m7-jellyfin/releases" <!-- RENAME-TRACKER: Update to m7-jellyfin-neo -->
@@ -54,7 +54,7 @@ Read this file completely before any code change. Update the relevant sections a
 ## §0 Project status
 
 - **Status: SUSPENDED until the maintainer dispatches a mission.** Do not start code work on your own.
-- **Read [`STATE.md`](STATE.md) first** (global state), then [`TASKS.md`](TASKS.md) (task index) and [`DECISIONS.md`](DECISIONS.md) (rationale).
+- **Read [`STATE.md`](STATE.md) first** (global state), then [`TASKS.md`](TASKS.md) (task index) and [`DECISIONS.md`](../adr/DECISIONS.md) (rationale).
 - Summary: the PS3 runs the **old (working) zip**; the refactored code is **NOT deployable as-is** (playback stalls — see §8). No zip is deployed without the maintainer's go-ahead. Jellyfin transcoding needs free GPU VRAM on the server.
 
 ## §1 Project identity & goals

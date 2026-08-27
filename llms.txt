@@ -5,8 +5,12 @@ Modern Jellyfin client plugin for Movian on PlayStation 3 — Jellyfin 10.9-10.1
 ## Links
 
 - README: https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/README.md
-- AGENTS: https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/AGENTS.md
+- AGENTS: https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/.github/agent-workspace/AGENTS.md
 - CONTRIBUTING: https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/CONTRIBUTING.md
 - SECURITY: https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/SECURITY.md
+- STATE: https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/.github/agent-workspace/STATE.md
+- TASKS: https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/.github/agent-workspace/TASKS.md
+- DECISIONS: https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/docs/adr/DECISIONS.md
+- TESTING: https://raw.githubusercontent.com/FloStyle/m7-jellyfin/main/.github/agent-workspace/TESTING.md
 - Issues: https://github.com/FloStyle/m7-jellyfin/issues
 - Releases: https://github.com/FloStyle/m7-jellyfin/releases

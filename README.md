@@ -39,16 +39,27 @@ Dev: `pnpm lint` (zero errors), `pnpm format`, `libs/` = Movian type definitions
 | `main` | NEO baseline (default) — modern features |
 | `stability` | Core fixes & performance → merged into `main` + upstream PR |
 
-## 🤝 Contributing & agents
+## 🤝 Contributing
 
 - Humans: see [CONTRIBUTING.md](CONTRIBUTING.md)
-- External AI agents: read [AGENTS.md](AGENTS.md) — scope, permissions, mission workflow
-- Project state/tasks/decisions: [STATE.md](STATE.md) · [TASKS.md](TASKS.md) · [DECISIONS.md](DECISIONS.md)
-- Testing protocol & validated versions: [TESTING.md](TESTING.md)
+- Security issues: see [SECURITY.md](SECURITY.md)
+
+## 🤖 AI Agent Integration
+
+This repository is designed for both human and AI agent collaboration. The following resources are available:
+
+| Resource | Description |
+|---|---|
+| [llms.txt](llms.txt) | LLM Context Index — quick links to all documentation |
+| [AGENTS.md](.github/agent-workspace/AGENTS.md) | Agent Permissions & Missions — scope, policies, workflow |
+| [DECISIONS.md](docs/adr/DECISIONS.md) | Architecture Decision Records — rationale for key choices |
+| [TESTING.md](.github/agent-workspace/TESTING.md) | L0-L3 Hardware Testing Protocol — on-device validation |
+
+External AI agents should read [AGENTS.md](.github/agent-workspace/AGENTS.md) before proposing any code changes.
 
 ## 🔌 Compatibility
 
-H.264 ≤ 1080p (level 4.1, 8-bit SDR) direct play; AAC/AC3/MP3 ≤ 5.1. HEVC/AV1/VP9/4K/HDR/10-bit → server HLS transcode. See [AGENTS.md](AGENTS.md) §4 for the full constraint list.
+H.264 ≤ 1080p (level 4.1, 8-bit SDR) direct play; AAC/AC3/MP3 ≤ 5.1. HEVC/AV1/VP9/4K/HDR/10-bit → server HLS transcode. See [AGENTS.md](.github/agent-workspace/AGENTS.md) §4 for the full constraint list.
 
 ## 📄 License
 
