@@ -17,10 +17,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Prepare source directory
+        run: cp -r . /tmp/m7-jellyfin-src
       - name: Build source tarball
         run: |
           DATE=$(date -u +%Y%m%d)
-          tar czf "m7-jellyfin-dev-${DATE}.tar.gz" \
+          cd /tmp/m7-jellyfin-src
+          tar czf "${GITHUB_WORKSPACE}/m7-jellyfin-dev-${DATE}.tar.gz" \
             --exclude='dist' \
             --exclude='.git' \
             --exclude='node_modules' \
