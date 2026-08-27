@@ -1,0 +1,47 @@
+name: Nightly
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    # Every day at 02:00 UTC
+    - cron: '0 2 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Build plugin
+        run: pnpm run build
+      - name: Build source tarball
+        run: |
+          DATE=$(date -u +%Y%m%d)
+          tar czf "m7-jellyfin-nightly-${DATE}.tar.gz" \
+            --exclude='dist' \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='scripts/.ps3-test.env' \
+            .
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: nightly
+          name: Nightly build
+          body: |
+            Auto-built from `main` — **not for production use**.
+            
+            Build date: ${{ github.event.head_commit.timestamp || 'scheduled' }}
+            Commit: [${{ github.sha }}](https://github.com/FloStyle/m7-jellyfin/commit/${{ github.sha }})
+          prerelease: true
+          make_latest: false
+          files: |
+            dist/jellyfin.zip
+            m7-jellyfin-nightly-*.tar.gz
