@@ -1,3 +1,6 @@
+# pnpm workspace configuration
+packages:
+  - '.'
 # pnpm 11 build-script policy. Neither package needs its postinstall for
 # this build: @swc/core ships prebuilt native bindings via optional
 # dependencies, unrs-resolver ships prebuilt N-API binaries.
