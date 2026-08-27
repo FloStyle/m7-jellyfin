@@ -1,24 +1,37 @@
 #!/usr/bin/env bash
 # release.sh — cut a NEO release: bump version, tag, push.
-# GitHub Actions (release.yml) builds dist/jellyfin.zip and publishes it as
-# a release asset; the PS3 plugin's built-in upgrader then offers it (24h
-# auto-check or the manual Update button).
+# GitHub Actions (release.yml) builds dist/jellyfin.zip + source tarball
+# and publishes them as a stable release.
+# For nightly builds, push to main directly or run:
+#   ./scripts/release.sh --nightly
 #
-# Usage: ./scripts/release.sh 1.2.0
-# (update CHANGELOG.md first, then run this)
+# Usage:
+#   ./scripts/release.sh 1.2.0          # stable release
+#   ./scripts/release.sh --nightly      # trigger nightly build
+# (update CHANGELOG.md first for stable releases)
 set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+command -v gh >/dev/null || echo "⚠️ gh not found"
+
+if [ "${1:-}" = "--nightly" ]; then
+  echo "🌙 Nightly build — pushing to main to trigger the nightly workflow."
+  git diff --quiet || { echo "⚠️ uncommitted changes — commit or stash them first"; exit 1; }
+  git push origin main
+  echo "✅ Pushed to main — GitHub Actions will publish the nightly release automatically."
+  exit 0
+fi
 
 VERSION="${1:-}"
 if [ -z "$VERSION" ]; then
   echo "Usage: $0 <version>   e.g. $0 1.2.0"
+  echo "       $0 --nightly"
   exit 1
 fi
 
-cd "$(dirname "$0")/.."
-
 # Sanity checks
 git diff --quiet -- src/ || { echo "⚠️ uncommitted src/ changes — commit them first"; exit 1; }
-command -v gh >/dev/null || echo "⚠️ gh not found — tag will be pushed via SSH anyway"
 
 # Bump version in package.json (keeps plugin.json in sync at build time)
 python3 - "$VERSION" <<'PY'
@@ -37,5 +50,6 @@ git commit -m "chore: release v${VERSION}"
 git tag "v${VERSION}"
 git push origin main --tags
 
-echo "✅ v${VERSION} pushed — GitHub Actions builds dist/jellyfin.zip and publishes the release."
+echo "✅ v${VERSION} pushed — GitHub Actions builds dist/jellyfin.zip + source tarball"
+echo "   and publishes the stable release."
 echo "   The PS3 upgrader will detect it (24h auto-check or Update button)."
