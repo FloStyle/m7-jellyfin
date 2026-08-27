@@ -1,0 +1,81 @@
+name: Stable Release
+
+on:
+  push:
+    branches:
+      - stability
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Build plugin
+        run: pnpm run build
+      - name: Build source tarball
+        run: |
+          VERSION=$(grep '"version"' package.json | head -1 | sed 's/.*"version": "\(.*\)".*/\1/')
+          tar czf "m7-jellyfin-stable-${VERSION}.tar.gz" \
+            --exclude='dist' \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='scripts/.ps3-test.env' \
+            .
+      - name: Get latest tag or generate version
+        id: version
+        run: |
+          # Try to get the latest stable tag
+          LATEST=$(gh release list --limit 10 --json tagName --jq '[.[] | .tagName] | map(select(startswith("stable/"))) | sort | last // ""')
+          if [ -z "$LATEST" ]; then
+            # No stable tag yet, use current package.json version
+            echo "stable_tag=stable/$(grep '"version"' package.json | head -1 | sed 's/.*"version": "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
+          else
+            # Increment patch version
+            CURRENT=${LATEST#stable/}
+            MAJOR=$(echo "$CURRENT" | cut -d. -f1)
+            MINOR=$(echo "$CURRENT" | cut -d. -f2)
+            PATCH=$(echo "$CURRENT" | cut -d. -f3)
+            NEW_PATCH=$((PATCH + 1))
+            echo "stable_tag=stable/${MAJOR}.${MINOR}.${NEW_PATCH}" >> $GITHUB_OUTPUT
+          fi
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.stable_tag }}
+          name: "Stable ${{ steps.version.outputs.stable_tag }}"
+          body: |
+            ## 🟢 Stable Build
+
+            This is the **stable** build from the `stability` branch.
+
+            **Recommended for production use.**
+
+            ---
+
+            ### What's included
+
+            - ✅ All stability fixes (STAB-1, STAB-2, STAB-3)
+            - ✅ Jellyfin 10.11+ compatibility
+            - ✅ Session reporting (position sync)
+            - ✅ Drop-in updater pointing to FloStyle releases
+
+            ### Downloads
+
+            | Asset | Description |
+            |---|---|
+            | [jellyfin.zip](repository/releases/download/${{ steps.version.outputs.stable_tag }}/jellyfin.zip) | Plugin binary (install on PS3) |
+            | [m7-jellyfin-stable-${{ steps.version.outputs.stable_tag }}.tar.gz](repository/releases/download/${{ steps.version.outputs.stable_tag }}/m7-jellyfin-stable-${{ steps.version.outputs.stable_tag }}.tar.gz) | Source code |
+
+            ---
+
+            **Commit:** [${{ github.sha }}](https://github.com/FloStyle/m7-jellyfin/commit/${{ github.sha }})
+          make_latest: true
+          files: |
+            dist/jellyfin.zip
+            m7-jellyfin-stable-*.tar.gz

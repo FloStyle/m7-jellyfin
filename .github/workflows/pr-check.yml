@@ -1,0 +1,26 @@
+name: PR Check
+
+on:
+  pull_request:
+    branches:
+      - main
+      - stability
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm run lint
+      - name: Build
+        run: pnpm run build
+      - name: Verify zip
+        run: test -f dist/jellyfin.zip && echo "✅ dist/jellyfin.zip OK"
