@@ -3,7 +3,7 @@
 All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/), versioning follows [SemVer](https://semver.org/).
 
-## [Unreleased]
+## [1.5.0] — 2026-08-27
 
 ### Fixed (STAB-1 — validated on real PS3, 2026-08-26)
 - **Playback never initialized** (endless loading): `page.type = 'video'` is now re-asserted right before assigning the video source — `setPageHeader`/API calls reset the page type on Movian, and the refactor had dropped the re-assert the legacy plugin did.

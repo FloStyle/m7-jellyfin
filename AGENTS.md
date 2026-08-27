@@ -1,7 +1,7 @@
 ---
 name: "Movian Jellyfin (NEO)"
 description: "Modern Jellyfin client plugin for Movian on PlayStation 3 — Jellyfin 10.9-10.11+, hardened HTTP/session layer, strict PS3 device profile."
-version: "1.1.4"
+version: "1.5.0"
 updated: "2026-08-26"
 license: "GPL-3.0-only"
 repository: "https://github.com/FloStyle/m7-jellyfin"
