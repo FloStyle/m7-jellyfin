@@ -6,8 +6,8 @@
 #   ./scripts/release.sh --dev
 #
 # Usage:
-#   ./scripts/release.sh 1.2.0          # stable release
-#   ./scripts/release.sh --nightly      # trigger nightly build
+#   ./scripts/release.sh 1.2.0   # stable release
+#   ./scripts/release.sh --dev   # trigger dev build
 # (update CHANGELOG.md first for stable releases)
 set -euo pipefail
 
