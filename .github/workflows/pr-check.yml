@@ -1,3 +1,4 @@
+# TODO [RENAME-TRACKER]: Update all repository URLs and metadata references from 'FloStyle/m7-jellyfin' to 'FloStyle/m7-jellyfin-neo' before executing the repo rename.
 name: PR Check
 
 on:
@@ -16,13 +17,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      - name: Install pnpm
-        run: npm install -g pnpm
-      - name: Install
+          node-version: '22'
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install Dependencies
         run: pnpm install --frozen-lockfile
       - name: Lint
         run: pnpm run lint

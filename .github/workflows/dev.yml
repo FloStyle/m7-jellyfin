@@ -18,25 +18,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Prepare source directory
-        run: cp -r . /tmp/m7-jellyfin-src
       - name: Build source tarball
         run: |
           DATE=$(date -u +%Y%m%d)
-          cd /tmp/m7-jellyfin-src
-          tar czf "${GITHUB_WORKSPACE}/m7-jellyfin-dev-${DATE}.tar.gz" \
-            --exclude='dist' \
-            --exclude='.git' \
-            --exclude='node_modules' \
-            --exclude='scripts/.ps3-test.env' \
-            .
-      - name: Setup Node
+          git archive --format=tar.gz --prefix=m7-jellyfin-dev-${DATE}/ -o m7-jellyfin-dev-${DATE}.tar.gz HEAD
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      - name: Install pnpm
-        run: npm install -g pnpm
-      - name: Install
+          node-version: '22'
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install Dependencies
         run: pnpm install --frozen-lockfile
       - name: Build plugin
         run: pnpm run build

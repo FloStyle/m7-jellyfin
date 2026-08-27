@@ -15,30 +15,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Prepare source directory
-        run: cp -r . /tmp/m7-jellyfin-src
       - name: Build source tarball
         run: |
           VERSION=$(grep '"version"' package.json | head -1 | sed 's/.*"version": "\(.*\)".*/\1/')
-          cd /tmp/m7-jellyfin-src
-          tar czf "${GITHUB_WORKSPACE}/m7-jellyfin-stable-${VERSION}.tar.gz" \
-            --exclude='dist' \
-            --exclude='.git' \
-            --exclude='node_modules' \
-            --exclude='scripts/.ps3-test.env' \
-            .
-      - name: Setup Node
+          git archive --format=tar.gz --prefix=m7-jellyfin-stable-${VERSION}/ -o m7-jellyfin-stable-${VERSION}.tar.gz HEAD
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      - name: Install pnpm
-        run: npm install -g pnpm
-      - name: Install
+          node-version: '22'
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install Dependencies
         run: pnpm install --frozen-lockfile
       - name: Build plugin
         run: pnpm run build
       - name: Get latest tag or generate version
         id: version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Try to get the latest stable tag
           LATEST=$(gh release list --limit 10 --json tagName --jq '[.[] | .tagName] | map(select(startswith("stable/"))) | sort | last // ""')
