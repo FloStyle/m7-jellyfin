@@ -22,8 +22,6 @@ jobs:
         run: npm install -g pnpm
       - name: Install
         run: pnpm install --frozen-lockfile
-      - name: Build plugin
-        run: pnpm run build
       - name: Build source tarball
         run: |
           VERSION=$(grep '"version"' package.json | head -1 | sed 's/.*"version": "\(.*\)".*/\1/')
@@ -33,6 +31,8 @@ jobs:
             --exclude='node_modules' \
             --exclude='scripts/.ps3-test.env' \
             .
+      - name: Build plugin
+        run: pnpm run build
       - name: Get latest tag or generate version
         id: version
         run: |
