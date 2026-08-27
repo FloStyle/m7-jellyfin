@@ -1,4 +1,4 @@
-name: Nightly
+name: Dev Build
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
       - name: Build source tarball
         run: |
           DATE=$(date -u +%Y%m%d)
-          tar czf "m7-jellyfin-nightly-${DATE}.tar.gz" \
+          tar czf "m7-jellyfin-dev-${DATE}.tar.gz" \
             --exclude='dist' \
             --exclude='.git' \
             --exclude='node_modules' \
@@ -33,15 +33,15 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: nightly
-          name: Nightly build
+          tag_name: dev
+          name: Dev build
           body: |
             Auto-built from `main` — **not for production use**.
-            
+
             Build date: ${{ github.event.head_commit.timestamp || 'scheduled' }}
             Commit: [${{ github.sha }}](https://github.com/FloStyle/m7-jellyfin/commit/${{ github.sha }})
           prerelease: true
           make_latest: false
           files: |
             dist/jellyfin.zip
-            m7-jellyfin-nightly-*.tar.gz
+            m7-jellyfin-dev-*.tar.gz
